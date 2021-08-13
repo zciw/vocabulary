@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Spa</title>
+    <style>
+        body {
+            text-align: center;
+            margin-top: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            /* background-color: #14141f; */
+        }
+        form {
+            display: inline-block;
+        }
+        button {
+            font-size: 24px;
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        input[type=text] {
+             width: 100%;
+             box-sizing: border-box;
+             border: 2px solid #ccc;
+             border-radius: 4px;
+             font-size: 16px;
+             background-color: white;
+             background-image: url('searchicon.png');
+             background-position: 10px 10px;
+             background-repeat: no-repeat;
+             padding: 12px 20px 12px 40px;
+        }
+        input[type=submit] {
+            font-size: 24px;
+            background-color: dodgerblue;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        label {
+            margin: 5px 10px 5px 0;
+        }
+
+        input[value="A"] { color: gray;  }
+        input[value="Bcccc"] { color: gray; }
+
+        div {
+            display: none;
+        }
+    </style>
+    <script>
+
+        function showPage(page) {
+            document.querySelectorAll('div').forEach(
+                div => { 
+                    div.style.display = 'none';
+            })
+            document.querySelector(`#${page}`).style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('button').forEach(button => {
+                button.onclick = function() {
+                    showPage(this.dataset.page);
+                }
+            })
+        })
+
+    </script>
+</head>
+<body>
+    <header>
+        <h3 style="color:gray;">Słówka<h3>
+    </header>
+    <button data-page="new">New</button>
+    <button data-page="ex">Ćwicz</button>
+    <button data-page="home">Home</button>
+    <div id='home'>
+        <h1>Home</h1>
+    </div>
+    <div id='new'>
+        <form action="" method="POST">
+            <label for="fname">Pytanie:</label><br>
+            <input type="text" name='question' value="A"><br>
+            <label for="lname">Odpowiedź:</label><br>
+            <input type="text" name='answer' value="Bcccc"><br><br>
+            <input type="submit" value="Potwierdź">
+        </form>
+    </div>
+    <div id='ex'>
+            <h1>Lista pytań</h1>
+        {% for i, j in name.items()  %}
+        <p data-page={{i}}><button data-page={{i}}>{{i}}</button></p>
+        {% endfor %}
+    </div>
+        {% for i, j in name.items()  %} 
+             <div id={{i}}>
+                <h1>{{j}}</h1>
+             </div>
+        {% endfor %}
+</body>
+</html>
