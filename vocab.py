@@ -21,7 +21,7 @@ class Vocab(db.Model):
 def run():
     return render_template("main.html",name="'so faar nothing'")
 
-@app.route("/<section>", methods=['GET', 'POST'])
+@app.route("/<int:section>", methods=['GET', 'POST'])
 def split(section):
     
     name=''
@@ -40,7 +40,6 @@ def split(section):
     #     item = Vocab(question=q, answer=a)
     #     db.session.add(item)
     #     db.session.commit()
-    data=['a', 'name', 'c']
-    num=int(section)
-    if 1 <= num <=3:
-        return data[section-1]
+    name=['a', 'name', 'c']
+    if 1 <= section <=3
+        return name[section-1]
