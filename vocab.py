@@ -19,26 +19,28 @@ class Vocab(db.Model):
 
 @app.route("/")
 def run():
-    return render_template("main.html",name='so faar nothing')
+    return render_template("main.html",name="'so faar nothing'")
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def split(section):
+    
     name=''
-    if section == 1:
-        all = Vocab.query.all()
-        q_a = {}
-        q_and_a = []
-        for i in all:
-            local_q = i.question
-            local_a = i.answer
-            q_a[local_q] = local_a
-            q_and_a.append(q_a)
-        name=str(q_a)    
-        return name
-    if request.method == 'POST':
-        q = request.form['question']
-        a = request.form['answer']
-        item = Vocab(question=q, answer=a)
-        db.session.add(item)
-        db.session.commit()
-    return name
+    all = Vocab.query.all()
+    q_a = {}
+    q_and_a = []
+    for i in all:
+        local_q = i.question
+        local_a = i.answer
+        q_a[local_q] = local_a
+        q_and_a.append(q_a)
+    name=q_a
+    # if request.method == 'POST':
+    #     q = request.form['question']
+    #     a = request.form['answer']
+    #     item = Vocab(question=q, answer=a)
+    #     db.session.add(item)
+    #     db.session.commit()
+    data=['a', 'name', 'c']
+    num=int(section)
+    if 1 <= num <=3:
+        return data[section-1]

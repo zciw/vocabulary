@@ -6,7 +6,6 @@
      <style>
         body {
             text-align: center;
-            margin-top: 30px;
             font-family: Arial, Helvetica, sans-serif;
             /* background-color: #14141f; */
         }
@@ -57,23 +56,33 @@
         input[value="A"] { color: gray;  }
         input[value="Bcccc"] { color: gray; }
 
+        div {
+            display: none;
+        }
     </style>
 <script>
-    function showSection({{name}}) {
+   
+    function showSection(section) {
             console.log('function starting')
-            fetch({{name}})
+            document.querySelectorAll('div').forEach(
+                div => { 
+                    div.style.display = 'none';
+            })
+            let selector=`#section`+`${section}`;
+            console.log("selector is: ", selector)
+            document.querySelector(selector).style.display = 'block';
+            fetch(`/${section}`)
             .then(response => response.text())
             .then(text => {
-                console.log(text);
-                document.querySelector('#content').innerHTML = text;
+                console.log('text: ', text);
+                document.querySelector('#a').innerHTML = text;
             });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('button').forEach(button => {
                 button.onclick = function() {
-                   // showPage(this.dataset.page);
-                   showSection(this.dataset.section);
+                    showSection(this.dataset.section);
                 }
             })
         })
@@ -84,9 +93,9 @@
     <button data-section="1">New</button>
     <button data-section="2">Ćwicz</button>
     <button data-section="3">Home</button>
-    <div id='content'></div>
-
-    <div id='new'>
+    
+    <h3 id="a"></h3>
+    <div id="section1">
         <form action="" method="POST">
             <label for="fname">Pytanie:</label><br>
             <input type="text" name='question' value="A"><br>
@@ -95,6 +104,14 @@
             <input type="submit" value="Potwierdź">
         </form>
     </div>
+    <div id="section2">
+        <h1>Lista pytań</h1>
+    </div>
+
+    <div id="section3">
+        <h1>id3</h1>
+    </div>
+   
    
 </body>
 
