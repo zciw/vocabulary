@@ -17,22 +17,28 @@ class Vocab(db.Model):
     def __repr__(self):
         return f'Question: {self.question} and And Answer: {self.answer}'
 
-
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
 def run():
-    all = Vocab.query.all()
-    q_a = {}
-    q_and_a = []
-    for i in all:
-        local_q = i.question
-        local_a = i.answer
-        q_a[local_q] = local_a
-        q_and_a.append(q_a)
+    return render_template("main.html",name='so faar nothing')
 
+@app.route("/<section>", methods=['GET', 'POST'])
+def split(section):
+    name=''
+    if section == 1:
+        all = Vocab.query.all()
+        q_a = {}
+        q_and_a = []
+        for i in all:
+            local_q = i.question
+            local_a = i.answer
+            q_a[local_q] = local_a
+            q_and_a.append(q_a)
+        name=str(q_a)    
+        return name
     if request.method == 'POST':
         q = request.form['question']
         a = request.form['answer']
         item = Vocab(question=q, answer=a)
         db.session.add(item)
         db.session.commit()
-    return render_template("index.html", name=q_a)
+    return name

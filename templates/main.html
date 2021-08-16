@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Spa</title>
-    <style>
+     <style>
         body {
             text-align: center;
             margin-top: 30px;
@@ -56,42 +56,36 @@
 
         input[value="A"] { color: gray;  }
         input[value="Bcccc"] { color: gray; }
-        
-        div {
-            display: none;
-        }
 
     </style>
-    <script>
-
-        function showPage(page) {
-            document.querySelectorAll('div').forEach(
-                div => { 
-                    div.style.display = 'none';
-            })
-            document.querySelector(`#${page}`).style.display = 'block';
+<script>
+    function showSection({{name}}) {
+            console.log('function starting')
+            fetch({{name}})
+            .then(response => response.text())
+            .then(text => {
+                console.log(text);
+                document.querySelector('#content').innerHTML = text;
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('button').forEach(button => {
                 button.onclick = function() {
-                    showPage(this.dataset.page);
+                   // showPage(this.dataset.page);
+                   showSection(this.dataset.section);
                 }
             })
         })
-
-    </script>
+</script>
 </head>
+
 <body>
-    <header>
-        <h3 style="color:gray;">Słówka<h3>
-    </header>
-    <button data-page="new">New</button>
-    <button data-page="ex">Ćwicz</button>
-    <button data-page="home">Home</button>
-    <div id='home'>
-        <h1>Home</h1>
-    </div>
+    <button data-section="1">New</button>
+    <button data-section="2">Ćwicz</button>
+    <button data-section="3">Home</button>
+    <div id='content'></div>
+
     <div id='new'>
         <form action="" method="POST">
             <label for="fname">Pytanie:</label><br>
@@ -101,16 +95,7 @@
             <input type="submit" value="Potwierdź">
         </form>
     </div>
-    <div id='ex'>
-            <h1>Lista pytań</h1>
-        {% for i, j in name.items()  %}
-        <p data-page={{i}}><button data-page={{i}}>{{i}}</button></p>
-        {% endfor %}
-    </div>
-        {% for i, j in name.items()  %} 
-             <div id={{i}}>
-                <h1>{{j}}</h1>
-             </div>
-        {% endfor %}
+   
 </body>
+
 </html>
