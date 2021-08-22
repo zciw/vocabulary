@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask import render_template
+from flask import render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import json
 
@@ -17,29 +17,28 @@ class Vocab(db.Model):
     def __repr__(self):
         return f'Question: {self.question} and And Answer: {self.answer}'
 
+all = Vocab.query.all()
+q_a = {}
+q_and_a = []
+for i in all:
+    local_q = i.question
+    local_a = i.answer
+    q_a[local_q] = local_a
+    q_and_a.append(q_a)
+
+
 @app.route("/")
 def run():
-    return render_template("main.html",name="'so faar nothing'")
+    return render_template("main.html",name=jsonify(q_a))
 
 @app.route("/<int:section>", methods=['GET', 'POST'])
 def split(section):
-    
-    name=''
-    all = Vocab.query.all()
-    q_a = {}
-    q_and_a = []
-    for i in all:
-        local_q = i.question
-        local_a = i.answer
-        q_a[local_q] = local_a
-        q_and_a.append(q_a)
-    name=q_a
     # if request.method == 'POST':
     #     q = request.form['question']
     #     a = request.form['answer']
     #     item = Vocab(question=q, answer=a)
     #     db.session.add(item)
     #     db.session.commit()
-    name=['a', 'name', 'c']
-    if 1 <= section <=3
-        return name[section-1]
+    print(f'var name value is: {q_a}')    
+    if 1 <= section <=3:
+        return str(q_a)

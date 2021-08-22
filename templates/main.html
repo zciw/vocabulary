@@ -50,7 +50,7 @@
         }
 
         label {
-            margin: 5px 10px 5px 0;
+            margin: 5px 10px 5px;
         }
 
         input[value="A"] { color: gray;  }
@@ -61,7 +61,15 @@
         }
     </style>
 <script>
-   
+   let f;
+    function showJ() {
+            let name = JSON.parse(`{{ name}}`);
+            console.log('name:', name);
+            // document.getElementById('q').innerHTML = name.question;
+        }
+    document.addEventListener('DOMContentLoaded', function() {
+        showJ()
+        })
     function showSection(section) {
             console.log('function starting')
             document.querySelectorAll('div').forEach(
@@ -75,7 +83,10 @@
             .then(response => response.text())
             .then(text => {
                 console.log('text: ', text);
+                f=JSON.parse(text);
+                console.log('f local: ', f)
                 document.querySelector('#a').innerHTML = text;
+                    document.getElementById('q').innerHTML=f[0].question
             });
         }
 
@@ -86,7 +97,12 @@
                 }
             })
         })
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('f:', f)
+        showJ()
+        })
 </script>
+
 </head>
 
 <body>
@@ -106,6 +122,7 @@
     </div>
     <div id="section2">
         <h1>Lista pytań</h1>
+        <a id='q'></a>
     </div>
 
     <div id="section3">
