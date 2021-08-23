@@ -61,15 +61,7 @@
         }
     </style>
 <script>
-   let f;
-    function showJ() {
-            let name = JSON.parse(`{{ name}}`);
-            console.log('name:', name);
-            // document.getElementById('q').innerHTML = name.question;
-        }
-    document.addEventListener('DOMContentLoaded', function() {
-        showJ()
-        })
+    let f;
     function showSection(section) {
             console.log('function starting')
             document.querySelectorAll('div').forEach(
@@ -85,8 +77,12 @@
                 console.log('text: ', text);
                 f=JSON.parse(text);
                 console.log('f local: ', f)
-                document.querySelector('#a').innerHTML = text;
-                    document.getElementById('q').innerHTML=f[0].question
+                for (var key in f) {
+                    if (f.hasOwnProperty(key)) {
+                        console.log(key + " -> " + f[key]);
+                        document.querySelector('#q').innerHTML += `<dt>${key} ?</dt>`
+                }
+            }
             });
         }
 
@@ -98,8 +94,6 @@
             })
         })
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('f:', f)
-        showJ()
         })
 </script>
 
@@ -110,7 +104,6 @@
     <button data-section="2">Ćwicz</button>
     <button data-section="3">Home</button>
     
-    <h3 id="a"></h3>
     <div id="section1">
         <form action="" method="POST">
             <label for="fname">Pytanie:</label><br>
@@ -122,13 +115,13 @@
     </div>
     <div id="section2">
         <h1>Lista pytań</h1>
-        <a id='q'></a>
+        <dl id='q'></dl>
     </div>
 
     <div id="section3">
         <h1>id3</h1>
     </div>
-   
+    <p>{{name}}</p>   
    
 </body>
 

@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask import render_template, jsonify
+from flask import render_template, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 import json
 
@@ -29,7 +29,7 @@ for i in all:
 
 @app.route("/")
 def run():
-    return render_template("main.html",name=jsonify(q_a))
+    return render_template("main.html")
 
 @app.route("/<int:section>", methods=['GET', 'POST'])
 def split(section):
@@ -41,4 +41,4 @@ def split(section):
     #     db.session.commit()
     print(f'var name value is: {q_a}')    
     if 1 <= section <=3:
-        return str(q_a)
+        return make_response(jsonify(q_a))
