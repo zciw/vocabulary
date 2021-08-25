@@ -27,18 +27,24 @@ for i in all:
     q_and_a.append(q_a)
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def run():
-    return render_template("main.html")
+    if request.method == 'POST':
+        q = request.form['question']
+        a = request.form['answer']
+        item = Vocab(question=q, answer=a)
+        db.session.add(item)
+        db.session.commit()
+        all = Vocab.query.all()
+        global q_a
+        for i in all:
+            local_q = i.question
+            local_a = i.answer
+            q_a[local_q] = local_a
+        return render_template("main.html")
+    else:
+        return render_template("main.html")
 
 @app.route("/<int:section>", methods=['GET', 'POST'])
 def split(section):
-    # if request.method == 'POST':
-    #     q = request.form['question']
-    #     a = request.form['answer']
-    #     item = Vocab(question=q, answer=a)
-    #     db.session.add(item)
-    #     db.session.commit()
-    print(f'var name value is: {q_a}')    
-    if 1 <= section <=3:
-        return make_response(jsonify(q_a))
+    return make_response(jsonify(q_a))
