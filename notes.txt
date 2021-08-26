@@ -1,0 +1,3 @@
+# błąd http po nowym wpisie do bazy i restarcie strony
+# nadpisywanie listy pytań
+# json tylko lista pytan zamiast pytan i odpowiedzi

@@ -46,5 +46,9 @@ def run():
         return render_template("main.html")
 
 @app.route("/<int:section>", methods=['GET', 'POST'])
-def split(section):
-    return make_response(jsonify(q_a))
+def split(section, methods=['POST']):
+    if section == 2:
+        user_question=list(q_a.keys())[0]
+        return make_response(jsonify({'user_question':user_question}))
+    elif section == 3:
+        return make_response(jsonify(q_a))
