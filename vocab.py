@@ -29,12 +29,18 @@ for i in all:
 
 @app.route("/", methods=['GET', 'POST'])
 def run():
+    global q_a
     print('reqest: ', request)
     if request.method == 'POST':
         if request.form['user_a']=='user_a':
-            print('user_answer for detected')
-            return render_template("main.html")
-         else:
+            v=request.form['user_answer']
+            global answer
+            if v==q_a['which db ?']:
+                answer=True
+            else:
+                answer=False
+            return make_response(jsonify({'answer':answer}))
+        else:
             q = request.form['question']
             a = request.form['answer']
             item = Vocab(question=q, answer=a)
@@ -42,7 +48,6 @@ def run():
             db.session.commit()
 
         all = Vocab.query.all()
-        global q_a
         for i in all:
             local_q = i.question
             local_a = i.answer
@@ -58,4 +63,4 @@ def split(section, methods=['POST']):
         user_question=list(q_a.keys())[0]
         return make_response(jsonify({'user_question':user_question}))
     elif section == 3:
-        return make_respionse(jsonify(q_a))
+        return make_response(jsonify(q_a))
