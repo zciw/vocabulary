@@ -30,16 +30,17 @@ for i in all:
 @app.route("/", methods=['GET', 'POST'])
 def run():
     global q_a
+    result=False
     print('reqest: ', request)
     if request.method == 'POST':
         if request.form['user_a']=='user_a':
             v=request.form['user_answer']
-            global answer
             if v==q_a['which db ?']:
-                answer=True
+                result=True
             else:
-                answer=False
-            return make_response(jsonify({'answer':answer}))
+                result=False
+            return str(result)
+
         else:
             q = request.form['question']
             a = request.form['answer']
@@ -52,8 +53,8 @@ def run():
             local_q = i.question
             local_a = i.answer
             q_a[local_q] = local_a
-        return render_template("main.html")
-    return render_template("main.html")
+        return render_template("main.html", result=result)
+    return render_template("main.html", result=result)
 
 @app.route("/<int:section>", methods=['GET', 'POST'])
 def split(section, methods=['POST']):
