@@ -29,18 +29,24 @@ for i in all:
 
 @app.route("/", methods=['GET', 'POST'])
 def run():
+    is_user_answer=False
     global q_a
     result=False
     print('reqest: ', request)
     if request.method == 'POST':
-        if request.form['user_a']=='user_a':
+        keys = request.form
+        for i in keys:
+            if i == 'user_a':
+                is_user_answer = True
+        if is_user_answer == True:
             v=request.form['user_answer']
             if v==q_a['which db ?']:
                 result=True
+                print(f'result is: {result}')
             else:
                 result=False
-            return str(result)
-
+            is_user_answer=False
+            #return str(result)
         else:
             q = request.form['question']
             a = request.form['answer']
@@ -48,12 +54,11 @@ def run():
             db.session.add(item)
             db.session.commit()
 
-        all = Vocab.query.all()
-        for i in all:
-            local_q = i.question
-            local_a = i.answer
-            q_a[local_q] = local_a
-        return render_template("main.html", result=result)
+    all = Vocab.query.all()
+    for i in all:
+        local_q = i.question
+        local_a = i.answer
+        q_a[local_q] = local_a
     return render_template("main.html", result=result)
 
 @app.route("/<int:section>", methods=['GET', 'POST'])
@@ -65,3 +70,19 @@ def split(section, methods=['POST']):
         return make_response(jsonify({'user_question':user_question}))
     elif section == 3:
         return make_response(jsonify(q_a))
+
+points=0
+
+@app.route("/win", methods=["POST"])
+def win():
+    global points
+    points = points + 1
+    print("votes: ", votes)
+    return str(votes)
+
+@app.route("/loose", methods=["POST"])
+def loose():
+    global points
+    if poins >= 1:
+        ponits = points - 1
+    return str(points)

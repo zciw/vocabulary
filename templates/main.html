@@ -93,19 +93,35 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+
+            
+
             document.querySelectorAll('button').forEach(button => {
                 button.onclick = function() {
                     showSection(this.dataset.section);
                 }
             })
+
+            document.getElementById('confirm').onclick = function() {
+                    const request = new XMLHttpRequest();
+                    request.open('POST', `/win`);
+                    console.log('this.id: ', this.id)
+                    request.onload=()=>{
+                        const response=request.responseText;
+                        console.log('response: ', response);
+                        document.getElementById('points').innerHTML=response;
+                    };
+                    request.send();
+            }
         })
-    document.addEventListener('DOMContentLoaded', function() {
-        })
+ 
 </script>
 
 </head>
 
 <body>
+
+    <h1 id='points'></h1>
     <button data-section="1">New</button>
     <button data-section="2">Ćwicz</button>
     <button data-section="3">Lista pytań</button>
@@ -124,7 +140,7 @@
             <label id='uq' for="uq"></label>
             <input type="hidden" name="user_a" value="user_a"><br>
             <input type="text" name="user_answer" value="user_answer"><br>
-            <input type="submit" value="Potwierdź">
+            <input id = "confirm" type="submit" value="Potwierdź">
         </form>
     </div>
 

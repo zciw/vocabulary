@@ -2,3 +2,18 @@
 # błąd http po nowym wpisie do bazy i restarcie strony
 # nadpisywanie listy pytań
 # json tylko lista pytan zamiast pytan i odpowiedzi
+
+
+keys = request.form
+        for i in keys:
+            if i == 'user_a':
+                is_user_answer = True
+        if is_user_answer == True:
+            v=request.form['user_answer']
+            if v==q_a['which db ?']:
+                result=True
+                print(f'result is: {result}')
+            else:
+                result=False
+            is_user_answer=False
+            return str(result)
