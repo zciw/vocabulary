@@ -5,7 +5,7 @@ votes=0
 
 @app.route("/")
 def index():
-    return render_template("side.html", votes=votes)
+    return render_template("side2.html", votes=votes)
 
 @app.route("/up", methods=["POST"])
 def upvote():
@@ -25,3 +25,9 @@ def downvote():
 def testing():
 	test='new_test'
 	return test
+
+@app.route("/inputs", methods=["POST", "GET"])
+def putting():
+    print(f'request form: ')
+    inputs = 'inputs'
+    return inputs
