@@ -21,4 +21,7 @@ def downvote():
         votes=votes-1
     return str(votes)
 
-
+@app.route("/test", methods=["POST"])
+def testing():
+	test='new_test'
+	return test
