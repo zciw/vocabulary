@@ -101,13 +101,28 @@
     document.addEventListener('DOMContentLoaded', function() {
         })
 </script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', ()=> {
+        document.querySelectorAll('.click').forEach(item=>{item.onclick=()=>{
+            const request = new XMLHttpRequest();
+                        request.open('POST', `/${item.id}`);
+                        request.onload=()=>{
+                            const response=request.responseText;
+                            console.log('response: ', response)
+                            document.getElementById('count').innerHTML=response;
+                            };
+                                request.send();
+                        };
+                    });
+                });
+</script>
 </head>
 
 <body>
     <button data-section="1">New</button>
     <button data-section="2">Ćwicz</button>
     <button data-section="3">Lista pytań</button>
+    <button data-section="4">Ajax</button>
     
     <div id="section1">
         <form action="" method="POST">
@@ -131,7 +146,15 @@
         <dl id='q'></dl>
     </div>
     <p>{{name}}</p>   
-   
+   <div id="section4">
+       <h6>section4</h6>
+       Głosy: <span id="count">{{ votes }}</span>
+       <br><br>
+       <button id="up">W górę</button>
+       <br>
+       <button id="down">W dół</button>
+   </div>
+ 
 </body>
 
 </html>

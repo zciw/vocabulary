@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 db = SQLAlchemy(app)
 
 # /// three slashes means relative path
-
+votes=0
 class Vocab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(20), unique=True, nullable=False)
@@ -41,9 +41,8 @@ def run():
             local_q = i.question
             local_a = i.answer
             q_a[local_q] = local_a
-        return render_template("main.html")
-    else:
-        return render_template("main.html")
+    return render_template("main.html", votes=votes)
+    
 
 @app.route("/<int:section>", methods=['GET', 'POST'])
 def split(section, methods=['POST']):
@@ -52,3 +51,17 @@ def split(section, methods=['POST']):
         return make_response(jsonify({'user_question':user_question}))
     elif section == 3:
         return make_response(jsonify(q_a))
+
+@app.route("/up", methods=["POST"])
+def upvote():
+    global votes
+    votes=votes+1
+    print("votes: ", votes)
+    return str(votes)
+
+@app.route("/down", methods=["POST"])
+def downvote():
+    global votes
+    if votes>=1:
+        votes=votes-1
+    return str(votes)
