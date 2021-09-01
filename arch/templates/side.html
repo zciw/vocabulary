@@ -11,31 +11,24 @@
     <body>
         Głosy: <span id="count">{{ votes }}</span>
         <br><br>
-        <button id="up" class="click">W górę</button>
+        <button class="clicks" id="up">W górę</button>
         <br>
-        <button id="down" class="click">W dół</button>
+        <button class="clicks" id="down">W dół</button>
 		<br>
-		<button id="test" class="click">test</button>
+		<button class="clicks"  id="test">test</button>
         <h1 id="testing"></h1>
-        <form>
-            <input type="text" value="whatever" name="some_name" >
-            <input id="inputs"  type="submit" value="naciś" class="click">
-        </form>
 		 <script>
             document.addEventListener('DOMContentLoaded', ()=> {
-                document.querySelectorAll('.click').forEach(element=>{element.onclick=()=>{
+                document.querySelectorAll('.clicks').forEach(item=>{item.onclick=()=>{
                     const request = new XMLHttpRequest();
-                                request.open('POST', `/${element.id}`);
-								console.log('element.id:',element.id); 
+                                request.open('POST', `/${item.id}`);
+								console.log('item id:',item.id); 
                                 request.onload=()=>{
                                     const response=request.responseText;
                                     console.log('response: ', response)
-									if(element.id==='test') {
+									if(item.id==='test') {
 										document.getElementById("testing").innerHTML=response;
 									}
-                                    else if(element.id==='inputs'){
-                                        document.getElementById("testing").innerHTML+=response;
-                                                 }
 									else {
                                     document.getElementById('count').innerHTML=response;
 									}

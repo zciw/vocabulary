@@ -11,26 +11,34 @@
     <body>
         Głosy: <span id="count">{{ votes }}</span>
         <br><br>
-        <button id="up">W górę</button>
+        <button id="up" class="click">W górę</button>
         <br>
-        <button id="down">W dół</button>
+        <button id="down" class="click">W dół</button>
 		<br>
-		<button id="test">test</button>
+		<button id="test" class="click">test</button>
         <h1 id="testing"></h1>
+        <form>
+            <input type="text" value="whatever" name="some_name" >
+            <input id="inputs"  type="submit" value="naciś" class="click">
+            <h3 id="input">{{inputs}}</h3>
+        </form>
 		 <script>
             document.addEventListener('DOMContentLoaded', ()=> {
-                document.querySelectorAll('button').forEach(button=>{button.onclick=()=>{
+                document.querySelectorAll('.click').forEach(element=>{element.onclick=()=>{
                     const request = new XMLHttpRequest();
-                                request.open('POST', `/${button.id}`);
-								console.log('button id:',button.id); 
+                                request.open('POST', `/${element.id}`);
+								console.log('element.id:',element.id); 
                                 request.onload=()=>{
                                     const response=request.responseText;
                                     console.log('response: ', response)
-									if(button.id==='test') {
+									if(element.id==='test') {
 										document.getElementById("testing").innerHTML=response;
 									}
+                                    else if(element.id==='inputs'){
+                                        document.getElementById("input").innerHTML=response;
+                                                 }
 									else {
-                                    document.getElementById('count').innerHTML=response;
+                                    document.getElementById("count").innerHTML=response;
 									}
                                     };
                                         request.send();

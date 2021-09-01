@@ -4,71 +4,15 @@
     <meta charset="utf-8">
     <title>Spa</title>
     <link rel="stylesheet" href="static/css/main.css">
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #14141f; 
-            color: #ccc;
-        }
-        form {
-            display: inline-block;
-        }
-        button {
-            font-size: 24px;
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            margin: 4px 2px;
-            cursor: pointer;
-        }
-        input[type=text] {
-             width: 100%;
-             box-sizing: border-box;
-             border: 2px solid #ccc;
-             border-radius: 4px;
-             font-size: 16px;
-             background-color: white;
-             background-image: url('searchicon.png');
-             background-position: 10px 10px;
-             background-repeat: no-repeat;
-             padding: 12px 20px 12px 40px;
-        }
-        input[type=submit] {
-            font-size: 24px;
-            background-color: dodgerblue;
-            color: white;
-            border: none;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            margin: 4px 2px;
-            cursor: pointer;
-        }
-
-        label {
-            margin: 5px 10px 5px;
-        }
-
-        input[value="A"] { color: gray;  }
-        input[value="Bcccc"] { color: gray; }
-
-        div {
-            display: none;
-        }
-    </style>
+   
 <script>
     let f;
+
     function showSection(section) {
             console.log('function starting')
-            document.querySelectorAll('div').forEach(
-                div => { 
-                    div.style.display = 'none';
+            document.querySelectorAll('.hidden').forEach(
+                item => { 
+                    item.style.display = 'none';
             })
             let selector=`#section`+`${section}`;
             console.log("selector is: ", selector)
@@ -100,23 +44,26 @@
                 button.onclick = function() {
                     showSection(this.dataset.section);
                 }
-            })
-
-            document.getElementById('confirm').onclick = function() {
-                    const request = new XMLHttpRequest();
-                    request.open('POST', `/win`);
-                    console.log('this.id: ', this.id)
-                    request.onload=()=>{
-                        const response=request.responseText;
-                        console.log('response: ', response);
-                        document.getElementById('points').innerHTML=response;
-                    };
-                    request.send();
-            }
+            })   
         })
  
 </script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', ()=> {
+        document.querySelectorAll('.confirm').forEach(item=>{item.onclick=()=>{
+            const request = new XMLHttpRequest();
+                        request.open('POST', `/${item.id}`);
+                        console.log('item id:',item.id); 
+                        request.onload=()=>{
+                            const response=request.responseText;
+                            console.log('response: ', response)
+                            document.getElementById('count').innerHTML=response;
+                            };
+                                request.send();
+                        };
+                    });
+                });
+</script>
 </head>
 
 <body>
@@ -125,8 +72,9 @@
     <button data-section="1">New</button>
     <button data-section="2">Ćwicz</button>
     <button data-section="3">Lista pytań</button>
+    <button data-section="4">Ajax</button>
     
-    <div id="section1">
+    <div id="section1" class="hidden" >
         <form action="" method="POST">
             <label for="q">Pytanie:</label><br>
             <input type="text" name='question' value="A"><br>
@@ -135,21 +83,31 @@
             <input type="submit" value="Potwierdź">
         </form>
     </div>
-    <div id="section2">
+    <div id="section2" class="hidden" >
         <form action="" method="POST">
             <label id='uq' for="uq"></label>
             <input type="hidden" name="user_a" value="user_a"><br>
             <input type="text" name="user_answer" value="user_answer"><br>
-            <input id = "confirm" type="submit" value="Potwierdź">
+            <input class = "confirm" type="submit" value="Potwierdź">
         </form>
+        <p id='p'></p>
     </div>
 
-    <div id="section3">
+    <div id="section3" class="hidden" >
         <h1>Lista pytań</h1>
         <dl id='q'></dl>
     </div>
     <p>{{name}}</p>   
-   
+   <div id="section4" class="idden">
+    Głosy: <span id="count">{{ votes }}</span>
+    <br><br>
+    <button class="clicks" id="up">W górę</button>
+    <br>
+    <button class="clicks" id="down">W dół</button>
+    <br>
+    </div>
+    
+
 </body>
 
 </html>

@@ -71,18 +71,18 @@ def split(section, methods=['POST']):
     elif section == 3:
         return make_response(jsonify(q_a))
 
-@app.route("/up", methods=["POST"])
-def upvote():
-    global votes
-    votes=votes+1
+points=0
+
+@app.route("/win", methods=["POST"])
+def win():
+    global points
+    points = points + 1
     print("votes: ", votes)
     return str(votes)
 
-@app.route("/down", methods=["POST"])
-def downvote():
-    global votes
-    if votes>=1:
-        votes=votes-1
-    return str(votes)
-
-
+@app.route("/loose", methods=["POST"])
+def loose():
+    global points
+    if poins >= 1:
+        ponits = points - 1
+    return str(points)

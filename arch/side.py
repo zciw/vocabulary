@@ -2,10 +2,12 @@ from flask import Flask, render_template
 app=Flask(__name__)
 
 votes=0
+inputs='inputs'
+inp='inp'
 
 @app.route("/")
 def index():
-    return render_template("side2.html", votes=votes)
+    return render_template("side2.html", votes=votes, inputs=inputs)
 
 @app.route("/up", methods=["POST"])
 def upvote():
@@ -29,5 +31,4 @@ def testing():
 @app.route("/inputs", methods=["POST", "GET"])
 def putting():
     print(f'request form: ')
-    inputs = 'inputs'
-    return inputs
+    return inp
