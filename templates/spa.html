@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <title>spa</title>
+        <style>
+            .spa {
+                display: none;
+         }
+        </style>
+        <script>
+       
+            function showSection(section) {
+                fetch(`play/${section}`)
+                .then(response=>response.text())
+                .then(text=>{            
+                    console.log(text)
+                    document.querySelector('#p').innerHTML = text;
+                            })
+                        }
+            function showPage(page) {
+                document.querySelectorAll('.spa').forEach(d => {
+                d.style.display = 'none';
+            });
+                console.log(`#${page}`)
+                document.querySelector(`#${page}`).style.display = 'block';
+            }
+
+            // Wait for page to loaded:
+            document.addEventListener('DOMContentLoaded', function() {
+            // Select all buttons
+                document.querySelectorAll('button').forEach(button => {
+
+            // When a button is clicked, switch to that page
+                button.onclick = function() {
+                showSection(this.dataset.page);                
+                showPage(this.dataset.page);
+                    }
+                })
+            });
+
+        </script>
+        <body>
+            <button data-page='page1'>p1</button>
+            <button data-page='page2'>p2</button>
+            <button data-page='page3'>p3</button>
+
+            <div class='spa' id='page1'>p1</div>
+            <div class='spa' id='page2'>p2</div>
+            <div class='spa' id='page3'>p3</div>
+            <h6 id='p'></h6>
+        </body>
+    </head>
