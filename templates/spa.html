@@ -2,6 +2,8 @@
 <html lang='en'>
     <head>
         <title>spa</title>
+        <link rel="stylesheet" href="static/main.css">
+
         <style>
             .spa {
                 display: none;
@@ -44,9 +46,26 @@
             <button data-page='page2'>p2</button>
             <button data-page='page3'>p3</button>
 
-            <div class='spa' id='page1'>p1</div>
-            <div class='spa' id='page2'>p2</div>
-            <div class='spa' id='page3'>p3</div>
+            <div class='spa' id='page1'>
+                <form action="" method="POST">
+                    <label for="q">Pytanie:</label><br>
+                    <input type="text" name='question' value="A"><br>
+                    <label for="a">Odpowiedź:</label><br>
+                    <input type="text" name='answer' value="Bcccc"><br><br>
+                    <input type="submit" value="Potwierdź">
+                </form>
+            </div>
+            <div class='spa' id='page2'>
+                <form action="" method="POST">
+                    <label>question</label>
+                    <input type="text" name="userQuestion"><br>
+                    <input type="submit" value="Potwierdź">
+                </form>
+            </div>
+            <div class='spa' id='page3'>
+                <h1>Lista pytań</h1>
+                <dl id='q'></dl>
+            </div>
             <h6 id='p'></h6>
         </body>
     </head>
