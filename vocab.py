@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 db = SQLAlchemy(app)
 
 # /// three slashes means relative path
-votes=0
+
 class Vocab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(20), unique=True, nullable=False)
@@ -24,7 +24,7 @@ for i in all:
     local_q = i.question
     local_a = i.answer
     q_a[local_q] = local_a
-    q_and_a.append(q_a)
+    q_and_a.append(local_q)
 
 @app.route("/play")
 def play():
@@ -38,22 +38,17 @@ def rsplit(section):
     elif section == 'page2':
         return l[1]
     else:
-        return l[2]
+        return jsonify(q_and_a)
     # if section ==  2:
      #   user_question=list(q_a.keys())[0]
       #  return make_response(jsonify({'user_question':user_question}))
    # elif section == 3:
-    #    return make_response(jsonify(q_a))
+    #    return make_response(jsonify(q_and_a))
 
 
 #@app.route("/play_two")
 #def play_two():
 #    return render_template('play_two.html', n=request.args.get('n', 'bmf'))
-
-@app.route("/fetch")
-def fetch():
-    fetch = {'a':'A','b':'B'}
-    return jsonify(fetch)
 
 @app.route("/", methods=['GET', 'POST'])
 def run():
@@ -69,7 +64,7 @@ def run():
             local_q = i.question
             local_a = i.answer
             q_a[local_q] = local_a
-    return render_template("main.html", votes=votes)    
+    return render_template("main.html")    
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def split(section):

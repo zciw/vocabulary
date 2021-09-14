@@ -16,7 +16,12 @@
                 .then(response=>response.text())
                 .then(text=>{            
                     console.log(text)
-                    document.querySelector('#p').innerHTML = text;
+                    sample = JSON.parse(text);
+                    t=''
+                    for(let i in sample) {
+                        t+=sample[i]+'<br>';
+                                }
+                    document.querySelector('#p').innerHTML = t;
                             })
                         }
             function showPage(page) {
