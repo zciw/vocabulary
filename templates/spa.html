@@ -12,7 +12,7 @@
         <script>
        
             function showSection(section) {
-                fetch(`play/${section}`)
+                fetch(`/${section}`)
                 .then(response=>response.text())
                 .then(text=>{            
                     console.log(text)
@@ -69,8 +69,7 @@
             </div>
             <div class='spa' id='page3'>
                 <h1>Lista pytań</h1>
-                <dl id='q'></dl>
+                <dl id='p'></dl>
             </div>
-            <h6 id='p'></h6>
         </body>
     </head>

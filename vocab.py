@@ -26,11 +26,22 @@ for i in all:
     q_a[local_q] = local_a
     q_and_a.append(local_q)
 
-@app.route("/play")
+@app.route("/", methods=['GET', 'POST'])
 def play():
+    if request.method == 'POST':
+        q = request.form['question']
+        a = request.form['answer']
+        item = Vocab(question=q, answer=a)
+        db.session.add(item)
+        db.session.commit()
+        global q_a
+        for i in all:
+            local_q = i.question
+            local_a = i.answer
+            q_a[local_q] = local_a
     return render_template("spa.html")
 
-@app.route("/play/<section>", methods=['GET', 'POST'])
+@app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
     l=['bad','bad mother','bad mother fucker']
     if section == 'page1':
@@ -38,39 +49,39 @@ def rsplit(section):
     elif section == 'page2':
         return l[1]
     else:
-        return jsonify(q_and_a)
-    # if section ==  2:
-     #   user_question=list(q_a.keys())[0]
-      #  return make_response(jsonify({'user_question':user_question}))
-   # elif section == 3:
-    #    return make_response(jsonify(q_and_a))
+        all_qa = Vocab.query.all()
+        q_to_show = []
+        for i in all_qa:
+            q=i.question
+            q_to_show.append(q)
+        return jsonify(q_to_show)
 
 
-#@app.route("/play_two")
-#def play_two():
+# @app.route("/play_two")
+# def play_two():
 #    return render_template('play_two.html', n=request.args.get('n', 'bmf'))
 
-@app.route("/", methods=['GET', 'POST'])
-def run():
-    if request.method == 'POST':
-        q = request.form['question']
-        a = request.form['answer']
-        item = Vocab(question=q, answer=a)
-        db.session.add(item)
-        db.session.commit()
-        all = Vocab.query.all()
-        global q_a
-        for i in all:
-            local_q = i.question
-            local_a = i.answer
-            q_a[local_q] = local_a
-    return render_template("main.html")    
+# @app.route("/", methods=['GET', 'POST'])
+# def run():
+#     if request.method == 'POST':
+#         q = request.form['question']
+#         a = request.form['answer']
+#         item = Vocab(question=q, answer=a)
+#         db.session.add(item)
+#         db.session.commit()
+#         all = Vocab.query.all()
+#         global q_a
+#         for i in all:
+#             local_q = i.question
+#             local_a = i.answer
+#             q_a[local_q] = local_a
+#     return render_template("main.html")    
 
-@app.route("/<section>", methods=['GET', 'POST'])
-def split(section):
-    if section == 2:
-        user_question=list(q_a.keys())[0]
-        return make_response(jsonify({'user_question':user_question}))
-    elif section == 3:
-        return make_response(jsonify(q_a))
+# @app.route("/<section>", methods=['GET', 'POST'])
+# def split(section):
+#     if section == 2:
+#         user_question=list(q_a.keys())[0]
+#         return make_response(jsonify({'user_question':user_question}))
+#     elif section == 3:
+#         return make_response(jsonify(q_a))
         
