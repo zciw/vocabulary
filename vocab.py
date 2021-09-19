@@ -28,17 +28,25 @@ for i in all:
 
 @app.route("/", methods=['GET', 'POST'])
 def play():
+    global q_a
     if request.method == 'POST':
+        success = False
         if 'userQuestion' in request.form:
             target = request.form['userQuestion']
             print(f'target is {target}')
+            if target == q_a[q_and_a[0]]:
+                print('success')
+                success = True
+            else:
+                print('fucked')
+                success = False
+          #  return str(success)
         else:
             q = request.form['question']
             a = request.form['answer']
             item = Vocab(question=q, answer=a)
             db.session.add(item)
             db.session.commit()
-            global q_a
             for i in all:
                 local_q = i.question
                 local_a = i.answer
@@ -48,16 +56,19 @@ def play():
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
     l=['bad','bad mother','bad mother fucker']
+    all_qa = Vocab.query.all()
+    q_to_show = []
+    for i in all_qa:
+        q=i.question
+        q_to_show.append(q)
     if section == 'page1':
         return l[0]
     elif section == 'page2':
-        return l[1]
+        return q_to_show[0]
+    elif section == 'page4':
+        print('page4')
+        return 'page4'
     else:
-        all_qa = Vocab.query.all()
-        q_to_show = []
-        for i in all_qa:
-            q=i.question
-            q_to_show.append(q)
         return jsonify(q_to_show)
 
 

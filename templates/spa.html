@@ -16,42 +16,58 @@
                 .then(response=>response.text())
                 .then(text=>{            
                     console.log(text)
-                    console.log('section first time at ShowSection: ', section)
-                    sample = JSON.parse(text);
-                    t=''
-                    for(let i in sample) {
-                        t+=sample[i]+'<br>';
-                                }
-                    console.log('section at ShowSection: ', section)            
+                    if (section=='page3') {
+                        sample = JSON.parse(text);
+                        t=''
+                        for(let i in sample) {
+                            t+=sample[i]+'<br>';
+                            }
                     document.querySelector('#p').innerHTML = t;
-                            })
-                        }
+                                }
+                    else if(section=='page2'){
+                       console.log('two')
+                       document.querySelector('#uq').innerHTML = text;     
+                          }
+                    else if(section=='page4'){
+                        console.log('page4')
+                                }
+                    else{console.log('diffrent story')}
+                })
+            }
+                    
             function showPage(page) {
                 document.querySelectorAll('.spa').forEach(d => {
                 d.style.display = 'none';
             });
-                console.log(`#${page}`)
+                console.log(`#${page}, at showPage`)
                 document.querySelector(`#${page}`).style.display = 'block';
             }
 
+            function y(sub){
+               console.log('sub')
+               showSection(sub)
+               showPage(sub)
+               }        
             // Wait for page to loaded:
             document.addEventListener('DOMContentLoaded', function() {
+            // Select all submit  inputs
+            document.querySelector('#sub').onclick = y('sub')
             // Select all buttons
-                document.querySelectorAll('button').forEach(button => {
-
+                document.querySelectorAll('.click').forEach(button => {
             // When a button is clicked, switch to that page
                 button.onclick = function() {
+                console.log('onclick')
                 showSection(this.dataset.page);                
                 showPage(this.dataset.page);
                     }
                 })
-            });
-
+           });
+        
         </script>
         <body>
-            <button data-page='page1'>p1</button>
-            <button data-page='page2'>p2</button>
-            <button data-page='page3'>p3</button>
+            <button class='click' data-page='page1'>p1</button>
+            <button class='click' data-page='page2'>p2</button>
+            <button class='click' data-page='page3'>p3</button>
 
             <div class='spa' id='page1'>
                 <form action="" method="POST">
@@ -68,12 +84,13 @@
                     <label>question</label>
                     <input type="hidden" name="userAnswer" value="userAnswer">
                     <input type="text" name="userQuestion"><br>
-                    <input type="submit" value="Potwierdź">
+                    <input id='sub' type="submit" data-sub='sub' value="Potwierdź">
                 </form>
             </div>
             <div class='spa' id='page3'>
                 <h1>Lista pytań</h1>
                 <dl id='p'></dl>
             </div>
+            <div class='spa' id='sub'>page4</div>
         </body>
     </head>
