@@ -4,6 +4,12 @@
             background-color: #14141f; 
             color: #ccc;
         }
+  .spa {
+                display: none;
+         }
+   h4 {
+                color: red;
+            }
         form {
             display: inline-block;
         }
@@ -51,6 +57,3 @@
         input[value="A"] { color: gray;  }
         input[value="Bcccc"] { color: gray; }
 
-        div {
-            display: none;
-        }

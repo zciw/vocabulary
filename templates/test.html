@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+ <html lang='en'>
+    <head>
+        <style>
+            body {
+                background-color: #14141f;
+                color: yellow;
+                
+            }
+        </style>
+        <script>
+            function f(d){
+                var s = d.getAttribute('data-sub')
+                alert(s)
+                console.log(s)
+
+                        }
+        </script>
+    </head>
+
+
+    <body>
+        <input type='text'>
+        <input onclick=f(this) type='submit' data-sub='sub1'>
+         <div class='sub' id='page4'><h4 id='four'>page4</h4></div>
+    </body>
+
+
+</html>

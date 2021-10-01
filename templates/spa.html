@@ -4,13 +4,13 @@
         <title>spa</title>
         <link rel="stylesheet" href="static/main.css">
 
-        <style>
-            .spa {
-                display: none;
-         }
-        </style>
         <script>
-       
+            function f(d) {
+                let z = d.getAttribute('data-t')
+                alert(z)
+                y(d)
+            }
+
             function showSection(section) {
                 fetch(`/${section}`)
                 .then(response=>response.text())
@@ -30,6 +30,7 @@
                           }
                     else if(section=='page4'){
                         console.log('page4')
+                        document.querySelector('#page4').innerHTML = text;
                                 }
                     else{console.log('diffrent story')}
                 })
@@ -39,22 +40,16 @@
                 document.querySelectorAll('.spa').forEach(d => {
                 d.style.display = 'none';
             });
-                console.log(`#${page}, at showPage`)
                 document.querySelector(`#${page}`).style.display = 'block';
             }
 
             function y(sub){
-               console.log('sub')
+               console.log('y func')
                showSection(sub)
                showPage(sub)
                }        
-            // Wait for page to loaded:
             document.addEventListener('DOMContentLoaded', function() {
-            // Select all submit  inputs
-            document.querySelector('#sub').onclick = y('sub')
-            // Select all buttons
                 document.querySelectorAll('.click').forEach(button => {
-            // When a button is clicked, switch to that page
                 button.onclick = function() {
                 console.log('onclick')
                 showSection(this.dataset.page);                
@@ -62,13 +57,14 @@
                     }
                 })
            });
-        
+            
         </script>
+    </head>
         <body>
             <button class='click' data-page='page1'>p1</button>
             <button class='click' data-page='page2'>p2</button>
             <button class='click' data-page='page3'>p3</button>
-
+            <button class='click' data-page='page4'>p4</button>
             <div class='spa' id='page1'>
                 <form action="" method="POST">
                     <label for="q">Pytanie:</label><br>
@@ -84,13 +80,12 @@
                     <label>question</label>
                     <input type="hidden" name="userAnswer" value="userAnswer">
                     <input type="text" name="userQuestion"><br>
-                    <input id='sub' type="submit" data-sub='sub' value="Potwierdź">
+                    <input type='submit' value='submit'>
                 </form>
             </div>
             <div class='spa' id='page3'>
                 <h1>Lista pytań</h1>
                 <dl id='p'></dl>
             </div>
-            <div class='spa' id='sub'>page4</div>
+            <div><h4>{{success}}</h4></div>
         </body>
-    </head>
