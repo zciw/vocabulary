@@ -5,11 +5,27 @@
         <link rel="stylesheet" href="static/main.css">
 
         <script>
-            function f(d) {
-                let z = d.getAttribute('data-t')
-                alert(z)
-                y(d)
+          function postInput(section, input) {
+              console.log('funkcja odpaliła')
+              const data = {'userAnswer' : input};
+              console.log(JSON.stringify(data))
+              const options = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body : JSON.stringify(data)
+                  };
+
+            fetch(`/${section}`, options)
+                .then(response=>response.text())
+                .then(text=>{
+                console.log('text: ', text)
+                console.log('options: ', options)
+                if(section=='q'){
+                    let t = text;
+                    document.querySelector('#q').innerHTML = t
             }
+        })
+                }
 
             function showSection(section) {
                 fetch(`/${section}`)
@@ -28,11 +44,8 @@
                        console.log('two')
                        document.querySelector('#uq').innerHTML = text;     
                           }
-                    else if(section=='page4'){
-                        console.log('page4')
-                        document.querySelector('#page4').innerHTML = text;
-                                }
-                    else{console.log('diffrent story')}
+                    else if(section=='page1')
+                      {console.log('diffrent story')}
                 })
             }
                     
@@ -43,17 +56,19 @@
                 document.querySelector(`#${page}`).style.display = 'block';
             }
 
-            function y(sub){
-               console.log('y func')
-               showSection(sub)
-               showPage(sub)
-               }        
             document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.click').forEach(button => {
                 button.onclick = function() {
-                console.log('onclick')
-                showSection(this.dataset.page);                
-                showPage(this.dataset.page);
+                if(this.dataset.page === 'page4') {
+                    console.log('czy to page4: ', this.dataset.page)
+                    text = document.getElementById('usa').value
+                    console.log('text ', text)
+                    postInput(this.dataset.page, text)
+                            }
+                else {
+                    showSection(this.dataset.page);                
+                    showPage(this.dataset.page);
+                         }
                     }
                 })
            });
@@ -64,7 +79,6 @@
             <button class='click' data-page='page1'>p1</button>
             <button class='click' data-page='page2'>p2</button>
             <button class='click' data-page='page3'>p3</button>
-            <button class='click' data-page='page4'>p4</button>
             <div class='spa' id='page1'>
                 <form action="" method="POST">
                     <label for="q">Pytanie:</label><br>
@@ -75,17 +89,17 @@
                 </form>
             </div>
             <div class='spa' id='page2'>
-                <form action="" method="POST">
                     <h1 id="uq">uq</h1>
                     <label>question</label>
-                    <input type="hidden" name="userAnswer" value="userAnswer">
-                    <input type="text" name="userQuestion"><br>
-                    <input type='submit' value='submit'>
-                </form>
+                    <input id='usa' type="text" name="userQuestion"><br>
+                    <button class = 'click' data-page = 'page4'>submit</button>
             </div>
             <div class='spa' id='page3'>
                 <h1>Lista pytań</h1>
                 <dl id='p'></dl>
             </div>
-            <div><h4>{{success}}</h4></div>
+            <div id='success'><h4>Result: {{success}}</h4></div>
+            <h3 id='q'></h3>
+            <div class='spa' id='page4'><h3>page 4</h3></div>
+
         </body>

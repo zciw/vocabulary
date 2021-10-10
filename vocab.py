@@ -29,7 +29,8 @@ for i in all:
     q_and_a.append(local_q)
 
 @app.route("/", methods=['GET', 'POST'])
-def play():    
+def play():
+    print('req: ', request.form)
     if request.method == 'POST' and 'userQuestion' not in request.form:
         q = request.form['question']
         a = request.form['answer']
@@ -41,21 +42,10 @@ def play():
             local_a = i.answer
             q_a[local_q] = local_a
         return render_template("spa.html")
-    elif request.method == 'POST':
-        #global q_a
-        global success
-        success = False
-        target = request.form['userQuestion']
-        print(f'target is {target}')
-        if target == q_a[q_and_a[0]]:
-            print('success')
-            success = True
-        else:
-            print('fucked')
-            success = False
-        return render_template('spa.html', success= str(success))     
+      
     elif request.method == 'GET':
-        return render_template("spa.html")
+        return render_template('spa.html', success=str(success))
+
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
@@ -70,6 +60,18 @@ def rsplit(section):
     elif section == 'page2':
         return q_to_show[0]
     elif section == 'page4':
+        if request.method == 'POST':
+            global success
+            success = False
+            target = request.json['userAnswer']
+            print(f'target is {target}')
+            if target == q_a[q_and_a[0]]:
+                print('success')
+                success = True
+            else:
+                print('fucked')
+                success = False
+            return str(success)
         return str(success)
     else:
         return jsonify(q_to_show)
