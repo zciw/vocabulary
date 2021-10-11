@@ -31,20 +31,7 @@ for i in all:
 @app.route("/", methods=['GET', 'POST'])
 def play():
     print('req: ', request.form)
-    if request.method == 'POST' and 'userQuestion' not in request.form:
-        q = request.form['question']
-        a = request.form['answer']
-        item = Vocab(question=q, answer=a)
-        db.session.add(item)
-        db.session.commit()
-        for i in all:
-            local_q = i.question
-            local_a = i.answer
-            q_a[local_q] = local_a
-        return render_template("spa.html")
-      
-    elif request.method == 'GET':
-        return render_template('spa.html', success=str(success))
+    return render_template('spa.html', success=str(success))
 
 
 @app.route("/<section>", methods=['GET', 'POST'])
@@ -55,8 +42,20 @@ def rsplit(section):
     for i in all_qa:
         q=i.question
         q_to_show.append(q)
-    if section == 'page1':
-        return l[0]
+    if section == 'page5':
+        if request.method == 'POST':
+            q = request.json['question']
+            a = request.json['answer']
+            item = Vocab(question=q, answer=a)
+            db.session.add(item)
+            db.session.commit()
+            for i in all:
+                local_q = i.question
+                local_a = i.answer
+                q_a[local_q] = local_a
+            return 'wtf1'
+        return 'wtf2'
+
     elif section == 'page2':
         return q_to_show[0]
     elif section == 'page4':
@@ -71,7 +70,8 @@ def rsplit(section):
             else:
                 print('fucked')
                 success = False
-            return str(success)
-        return str(success)
+            success=str(success)
+            return success
+        return success
     else:
         return jsonify(q_to_show)

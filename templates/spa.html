@@ -5,9 +5,10 @@
         <link rel="stylesheet" href="static/main.css">
 
         <script>
-          function postInput(section, input) {
+          var keys = ['userAnswer','question','answer']
+          function postInput(section, key, input) {
               console.log('funkcja odpaliła')
-              const data = {'userAnswer' : input};
+              const data = {key : input};
               console.log(JSON.stringify(data))
               const options = {
                 method: 'POST',
@@ -20,11 +21,9 @@
                 .then(text=>{
                 console.log('text: ', text)
                 console.log('options: ', options)
-                if(section=='q'){
-                    let t = text;
-                    document.querySelector('#q').innerHTML = t
-            }
-        })
+                let t = text;
+                document.querySelector('#success').innerHTML = t
+                     })
                 }
 
             function showSection(section) {
@@ -60,10 +59,15 @@
                 document.querySelectorAll('.click').forEach(button => {
                 button.onclick = function() {
                 if(this.dataset.page === 'page4') {
-                    console.log('czy to page4: ', this.dataset.page)
                     text = document.getElementById('usa').value
-                    console.log('text ', text)
-                    postInput(this.dataset.page, text)
+                    postInput(this.dataset.page, keys[0], text)
+                            }
+                else if(this.dataset.page === 'page5') {
+                   var question = document.getElementById('q').value;  
+                   var answer = document.getElementById('a').value;
+                   console.log('question and answer: ', question, answer);
+                   postInput(this.dataset.page, keys[1], question);
+                   postInput(this.dataset.page, keys[2], answer)
                             }
                 else {
                     showSection(this.dataset.page);                
@@ -80,13 +84,11 @@
             <button class='click' data-page='page2'>p2</button>
             <button class='click' data-page='page3'>p3</button>
             <div class='spa' id='page1'>
-                <form action="" method="POST">
                     <label for="q">Pytanie:</label><br>
-                    <input type="text" name='question' value="A"><br>
+                    <input id='q' type="text" name='question' value="A"><br>
                     <label for="a">Odpowiedź:</label><br>
                     <input type="text" name='answer' value="Bcccc"><br><br>
-                    <input type="submit" value="Potwierdź">
-                </form>
+                    <button id='a' class='click' data-page='page5' type="submit">Wyśli</button>
             </div>
             <div class='spa' id='page2'>
                     <h1 id="uq">uq</h1>
@@ -98,8 +100,7 @@
                 <h1>Lista pytań</h1>
                 <dl id='p'></dl>
             </div>
-            <div id='success'><h4>Result: {{success}}</h4></div>
+            <h4 id='success'>Result: {{success}}</h4>
             <h3 id='q'></h3>
             <div class='spa' id='page4'><h3>page 4</h3></div>
-
         </body>
