@@ -5,11 +5,9 @@
         <link rel="stylesheet" href="static/main.css">
 
         <script>
-          var keys = ['userAnswer','question','answer']
-          function postInput(section, key, input) {
-              console.log('funkcja odpaliła')
-              const data = {key : input};
-              console.log(JSON.stringify(data))
+          function postInput(section, dict) {
+              const data = dict
+              console.log('data json: ', JSON.stringify(data))
               const options = {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -59,15 +57,17 @@
                 document.querySelectorAll('.click').forEach(button => {
                 button.onclick = function() {
                 if(this.dataset.page === 'page4') {
+                    console.log('klniete i porównane', this.dataset.page)
                     text = document.getElementById('usa').value
-                    postInput(this.dataset.page, keys[0], text)
+                    var dict = { 'userAnswer': text };
+                    postInput(this.dataset.page, dict)
                             }
                 else if(this.dataset.page === 'page5') {
                    var question = document.getElementById('q').value;  
                    var answer = document.getElementById('a').value;
                    console.log('question and answer: ', question, answer);
-                   postInput(this.dataset.page, keys[1], question);
-                   postInput(this.dataset.page, keys[2], answer)
+                   var dictQA = {'question': question, 'answer': answer}
+                   postInput(this.dataset.page, dictQA);
                             }
                 else {
                     showSection(this.dataset.page);                
@@ -87,8 +87,8 @@
                     <label for="q">Pytanie:</label><br>
                     <input id='q' type="text" name='question' value="A"><br>
                     <label for="a">Odpowiedź:</label><br>
-                    <input type="text" name='answer' value="Bcccc"><br><br>
-                    <button id='a' class='click' data-page='page5' type="submit">Wyśli</button>
+                    <input id='a' type="text" name='answer' value="Bcccc"><br><br>
+                    <button class='click' data-page='page5' type="submit">Wyśli</button>
             </div>
             <div class='spa' id='page2'>
                     <h1 id="uq">uq</h1>

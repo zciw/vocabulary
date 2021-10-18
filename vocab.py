@@ -30,20 +30,20 @@ for i in all:
 
 @app.route("/", methods=['GET', 'POST'])
 def play():
-    print('req: ', request.form)
     return render_template('spa.html', success=str(success))
 
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
-    l=['bad','bad mother','bad mother fucker']
     all_qa = Vocab.query.all()
     q_to_show = []
     for i in all_qa:
         q=i.question
         q_to_show.append(q)
+    index = len(q_to_show)-1
     if section == 'page5':
         if request.method == 'POST':
+            print('page5 request: ',request.json)
             q = request.json['question']
             a = request.json['answer']
             item = Vocab(question=q, answer=a)
@@ -57,14 +57,15 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        return q_to_show[0]
+        return q_to_show[index]
     elif section == 'page4':
         if request.method == 'POST':
             global success
             success = False
-            target = request.json['userAnswer']
-            print(f'target is {target}')
-            if target == q_a[q_and_a[0]]:
+            print(request.json)
+            target = "request.json['userAnswer']"
+            print(f'target is {target} and index is {index}')
+            if target == q_a[q_and_a[index]]:
                 print('success')
                 success = True
             else:
