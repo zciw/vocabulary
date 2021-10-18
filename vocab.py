@@ -19,14 +19,16 @@ class Vocab(db.Model):
     def __repr__(self):
         return f'Question: {self.question} and And Answer: {self.answer}'
 
-all = Vocab.query.all()
-q_a = {}
-q_and_a = []
-for i in all:
-    local_q = i.question
-    local_a = i.answer
-    q_a[local_q] = local_a
-    q_and_a.append(local_q)
+def get_data():
+    all = Vocab.query.all()
+    q_a = {}
+    q_and_a = []
+    for i in all:
+        local_q = i.question
+        local_a = i.answer
+        q_a[local_q] = local_a
+        q_and_a.append(q_a)
+    return q_and_a
 
 @app.route("/", methods=['GET', 'POST'])
 def play():
@@ -49,10 +51,6 @@ def rsplit(section):
             item = Vocab(question=q, answer=a)
             db.session.add(item)
             db.session.commit()
-            for i in all:
-                local_q = i.question
-                local_a = i.answer
-                q_a[local_q] = local_a
             return 'wtf1'
         return 'wtf2'
 
@@ -63,9 +61,11 @@ def rsplit(section):
             global success
             success = False
             print(request.json)
-            target = "request.json['userAnswer']"
+            target = request.json['userAnswer']
             print(f'target is {target} and index is {index}')
-            if target == q_a[q_and_a[index]]:
+            data = get_data()
+            print('odpowiedz prawidlowa', data[index][q_to_show[index]])
+            if target == data[index][q_to_show[index]]:
                 print('success')
                 success = True
             else:
