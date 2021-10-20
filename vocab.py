@@ -21,6 +21,7 @@ class Vocab(db.Model):
 
 def get_data():
     all = Vocab.query.all()
+    print('all', all)
     q_a = {}
     q_and_a = []
     for i in all:
@@ -28,6 +29,7 @@ def get_data():
         local_a = i.answer
         q_a[local_q] = local_a
         q_and_a.append(q_a)
+    print('dane z funkcji get_data', q_and_a)    
     return q_and_a
 
 @app.route("/", methods=['GET', 'POST'])
@@ -37,12 +39,8 @@ def play():
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
-    all_qa = Vocab.query.all()
-    q_to_show = []
-    for i in all_qa:
-        q=i.question
-        q_to_show.append(q)
-    index = len(q_to_show)-1
+    data = get_data()
+    index = len(data)-1
     if section == 'page5':
         if request.method == 'POST':
             print('page5 request: ',request.json)
@@ -55,7 +53,10 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        return q_to_show[index]
+        print('data', data)
+        print('data index', data[index])
+        print('index', index)
+        return data[index]
     elif section == 'page4':
         if request.method == 'POST':
             global success
@@ -63,8 +64,6 @@ def rsplit(section):
             print(request.json)
             target = request.json['userAnswer']
             print(f'target is {target} and index is {index}')
-            data = get_data()
-            print('odpowiedz prawidlowa', data[index][q_to_show[index]])
             if target == data[index][q_to_show[index]]:
                 print('success')
                 success = True
@@ -75,4 +74,4 @@ def rsplit(section):
             return success
         return success
     else:
-        return jsonify(q_to_show)
+        return jsonify(data)
