@@ -22,11 +22,11 @@ class Vocab(db.Model):
 def get_data():
     all = Vocab.query.all()
     print('all', all)
-    q_a = {}
     q_and_a = []
     for i in all:
         local_q = i.question
         local_a = i.answer
+        q_a = {}
         q_a[local_q] = local_a
         q_and_a.append(q_a)
     print('dane z funkcji get_data', q_and_a)    
