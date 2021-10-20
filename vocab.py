@@ -40,7 +40,8 @@ def play():
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
     data = get_data()
-    index = len(data)-1
+    index = len(data)-2
+    key = ''
     if section == 'page5':
         if request.method == 'POST':
             print('page5 request: ',request.json)
@@ -53,18 +54,18 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        print('data', data)
-        print('data index', data[index])
-        print('index', index)
-        return data[index]
+        question =  data[index]
+        for i in question.keys():
+            key = i
+        return key    
     elif section == 'page4':
         if request.method == 'POST':
             global success
             success = False
             print(request.json)
             target = request.json['userAnswer']
-            print(f'target is {target} and index is {index}')
-            if target == data[index][q_to_show[index]]:
+            print(f'key is {key} and index is {index}')
+            if target == data[index][key]:
                 print('success')
                 success = True
             else:
