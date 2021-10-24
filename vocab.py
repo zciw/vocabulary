@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 db = SQLAlchemy(app)
 
 success = False
-
+g_key = ''
 # /// three slashes means relative path
 
 class Vocab(db.Model):
@@ -21,7 +21,6 @@ class Vocab(db.Model):
 
 def get_data():
     all = Vocab.query.all()
-    print('all', all)
     q_and_a = []
     for i in all:
         local_q = i.question
@@ -29,7 +28,6 @@ def get_data():
         q_a = {}
         q_a[local_q] = local_a
         q_and_a.append(q_a)
-    print('dane z funkcji get_data', q_and_a)    
     return q_and_a
 
 @app.route("/", methods=['GET', 'POST'])
@@ -40,11 +38,13 @@ def play():
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
     data = get_data()
-    index = len(data)-2
     key = ''
+    index = len(data)-3
+    question =  data[index]
+    for i in question.keys():
+        key = i
     if section == 'page5':
         if request.method == 'POST':
-            print('page5 request: ',request.json)
             q = request.json['question']
             a = request.json['answer']
             item = Vocab(question=q, answer=a)
@@ -54,25 +54,25 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        question =  data[index]
-        for i in question.keys():
-            key = i
-        return key    
+        return key   
+
     elif section == 'page4':
         if request.method == 'POST':
             global success
             success = False
-            print(request.json)
             target = request.json['userAnswer']
-            print(f'key is {key} and index is {index}')
             if target == data[index][key]:
                 print('success')
                 success = True
             else:
-                print('fucked')
                 success = False
             success=str(success)
             return success
         return success
     else:
-        return jsonify(data)
+        rd=[]
+        for i in data:
+            for q,a in i.items():
+                rd.append(q)
+        print('rd: ', rd)
+        return jsonify({'Q':rd})
