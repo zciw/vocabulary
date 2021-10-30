@@ -15,12 +15,15 @@
                   };
 
             fetch(`/${section}`, options)
-                .then(response=>response.text())
-                .then(text=>{
-                console.log('text: ', text)
+                .then(response=>response.json())
+                .then(json=>{
+                console.log('json: ', json)
                 console.log('options: ', options)
-                let t = text;
-                document.querySelector('#success').innerHTML = t
+                let j = json;
+                document.querySelector('#success').innerHTML = j.results[0]
+                document.querySelector('#uq').innerHTML = j.results[1]
+                let done = j.results[2]
+                if(done == true){alert('na dziś to wszystko')}
                      })
                 }
 
@@ -61,6 +64,7 @@
                     text = document.getElementById('usa').value
                     var dict = { 'userAnswer': text };
                     postInput(this.dataset.page, dict)
+                    document.querySelector('#uq').innerHTML = 'text';
                             }
                 else if(this.dataset.page === 'page5') {
                    var question = document.getElementById('q').value;  

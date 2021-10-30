@@ -1,12 +1,13 @@
 from flask import Flask, request, redirect, send_from_directory
 from flask import render_template, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
+from random import randint
 import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 db = SQLAlchemy(app)
-
+used_q_num=[]
 success = False
 g_key = ''
 # /// three slashes means relative path
@@ -30,6 +31,43 @@ def get_data():
         q_and_a.append(q_a)
     return q_and_a
 
+data = get_data()
+
+def check_index(index):
+    global used_q_num
+    if index in used_q_num:
+        return False
+    else:
+        return True
+
+def get_index(deta=get_data()):
+    index = randint(0, len(data)-1)
+    check = check_index(index)
+    if check == True:
+        used_q_num.append(index)
+        return index
+    else:
+        return get_index()
+
+q_num = get_index()
+
+def get_q(index=q_num, data=get_data()):
+    question =  data[index]
+    for i in question.keys():
+        return i
+
+question = get_q()
+
+def done():
+    global used_q_num
+    global data
+    print('used_q_num length: ', len(used_q_num))
+    if len(used_q_num) >= len(data)-20:
+        return True
+    else:
+        return False
+
+
 @app.route("/", methods=['GET', 'POST'])
 def play():
     return render_template('spa.html', success=str(success))
@@ -37,12 +75,10 @@ def play():
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
-    data = get_data()
-    key = ''
-    index = len(data)-3
-    question =  data[index]
-    for i in question.keys():
-        key = i
+    global data
+    global question
+    global q_num
+
     if section == 'page5':
         if request.method == 'POST':
             q = request.json['question']
@@ -54,25 +90,39 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        return key   
+        print('done: ', done())
+        if done() == False:
+            return question
+        else:
+            return 'gratulacje przerobiłaś wszystko na dziś'
 
     elif section == 'page4':
+        s_l = []
         if request.method == 'POST':
             global success
             success = False
             target = request.json['userAnswer']
-            if target == data[index][key]:
+            print('q_num and q: ', q_num, get_q(index=q_num))
+            print('sys_answ: ', data[q_num][get_q(index=q_num)])
+            if target == data[q_num][get_q(index=q_num)]:
                 print('success')
                 success = True
             else:
                 success = False
+            q_num = get_index()
             success=str(success)
-            return success
-        return success
+            s_l.append(success)
+            new_q = get_q(index=q_num)
+            s_l.append(new_q)
+            s_l.append(done())
+            return jsonify({'results':s_l})
+        return s_l
     else:
         rd=[]
+        data = get_data()
         for i in data:
             for q,a in i.items():
                 rd.append(q)
         print('rd: ', rd)
         return jsonify({'Q':rd})
+
