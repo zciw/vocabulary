@@ -1,11 +1,12 @@
-from flask import Flask, request, redirect, send_from_directory
-from flask import render_template, jsonify, make_response
+from flask import Flask, request, redirect, send_from_directory, session
+from flask import render_template, jsonify, make_response, url_for
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
 import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
+app.secret_key = b'gdshsgh/.,565'
 db = SQLAlchemy(app)
 used_q_num=[]
 success = False
@@ -70,8 +71,26 @@ def done():
 
 @app.route("/", methods=['GET', 'POST'])
 def play():
-    return render_template('spa.html', success=str(success))
+    if 'username' in session:
+        return render_template('spa.html', success=str(success))
+    return 'Nie jesteś zalogowana'
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        return redirect(url_for('play'))
+    return '''
+        <form method="post">
+            <p><input type=text name=username>
+            <p><input type=submit value=Login>
+        </form>
+    '''
+
+@app.route("/logout")
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('play'))
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
