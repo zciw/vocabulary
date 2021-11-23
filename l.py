@@ -9,6 +9,8 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 @app.route('/')
 def index():
     if 'username' in session:
+        print(f'type {type(session)}, session: \n {session} ')
+        print('user: ', session['username'])
         return f'Logged in as {session["username"]}'
     return 'You are not logged in'
 
@@ -16,6 +18,7 @@ def index():
 def login():
     if request.method == 'POST':
         session['username'] = request.form['username']
+        session['other'] = 'bmf'
         return redirect(url_for('index'))
     return '''
         <form method="post">

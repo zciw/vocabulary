@@ -11,6 +11,7 @@ db = SQLAlchemy(app)
 used_q_num=[]
 success = False
 g_key = ''
+user='anonimowy'
 # /// three slashes means relative path
 
 class Vocab(db.Model):
@@ -71,25 +72,28 @@ def done():
 
 @app.route("/", methods=['GET', 'POST'])
 def play():
-    if 'username' in session:
-        return render_template('spa.html', success=str(success))
-    return 'Nie jesteś zalogowana'
+    if 'user' in session:
+        print(f'użytkownik zalogowany {session["user"]}')
+        global user
+        user = session['user']
+        return render_template('spa.html', success=str(success), user=user)
+    return render_template('spa.html', success=str(success), user=user)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        session['username'] = request.form['username']
+        session['user'] = request.form['user']
         return redirect(url_for('play'))
     return '''
         <form method="post">
-            <p><input type=text name=username>
+            <p><input type=text name=user>
             <p><input type=submit value=Login>
         </form>
     '''
 
 @app.route("/logout")
 def logout():
-    session.pop('username', None)
+    session.pop('user', None)
     return redirect(url_for('play'))
 
 @app.route("/<section>", methods=['GET', 'POST'])
