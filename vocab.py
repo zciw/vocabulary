@@ -14,13 +14,24 @@ g_key = ''
 user='anonimowy'
 # /// three slashes means relative path
 
+class User(db.Model):
+    id =  db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'name: {self.name}'
+
 class Vocab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(20), unique=True, nullable=False)
     answer = db.Column(db.String(120), unique=True, nullable=False)
-
+    #  user = User()
     def __repr__(self):
         return f'Question: {self.question} and And Answer: {self.answer}'
+
+
+
+
 
 def get_data():
     all = Vocab.query.all()
