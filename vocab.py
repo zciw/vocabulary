@@ -25,9 +25,10 @@ class Vocab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(20), unique=True, nullable=False)
     answer = db.Column(db.String(120), unique=True, nullable=False)
-    #  user = User()
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+    user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
     def __repr__(self):
-        return f'Question: {self.question} and And Answer: {self.answer}'
+        return f' has Question: {self.question} and And Answer: {self.answer}'
 
 
 
