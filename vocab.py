@@ -104,7 +104,7 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('play'))
 
-@app.route("/newuser")
+@app.route("/newuser", methods=['GET', 'POST'])
 def newuser():
     session.pop('user', None)
     if request.method == 'POST':
