@@ -30,10 +30,6 @@ class Vocab(db.Model):
     def __repr__(self):
         return f' has Question: {self.question} and And Answer: {self.answer}'
 
-
-
-
-
 def get_data():
     all = Vocab.query.all()
     q_and_a = []
@@ -108,6 +104,27 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('play'))
 
+@app.route("/newuser")
+def newuser():
+    session.pop('user', None)
+    if request.method == 'POST':
+        u = request.form['user']
+        print('new user', user)
+        item=User(name=u)
+        db.session.add(item)
+        db.session.commit()
+        return redirect(url_for('play'))
+    return '''
+        <form method="post">
+            <p><label>Podaj Twoje imie</label></P>
+            <p><input type=text name=user>
+            <p><input type=submit value='Zatwierdż'>
+        </form>
+    '''
+
+
+    
+
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
     global data
@@ -118,7 +135,10 @@ def rsplit(section):
         if request.method == 'POST':
             q = request.json['question']
             a = request.json['answer']
-            item = Vocab(question=q, answer=a)
+            u=session['user']
+            print(u)
+            dbu = User.query.filter_by(name=u).first()
+            item = Vocab(question=q, answer=a, user_id=dbu.id)
             db.session.add(item)
             db.session.commit()
             return 'wtf1'
@@ -152,7 +172,7 @@ def rsplit(section):
             s_l.append(done())
             return jsonify({'results':s_l})
         return s_l
-    else:
+    elif section == 'page3':
         rd=[]
         data = get_data()
         for i in data:
