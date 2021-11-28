@@ -14,6 +14,7 @@ g_key = ''
 user='anonimowy'
 # /// three slashes means relative path
 
+
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), unique=True, nullable=False)
@@ -30,8 +31,19 @@ class Vocab(db.Model):
     def __repr__(self):
         return f' has Question: {self.question} and And Answer: {self.answer}'
 
+def get_user_id():
+    id = 1
+    if session:
+        print('there is a session')
+        un = session['user']
+        u = User.query.filter_by(name=un).first()
+        id = u.id
+        print('id: ', id)
+        return id
+    return id
+
 def get_data():
-    all = Vocab.query.all()
+    all = Vocab.query.filter_by(user_id=get_user_id()).all()
     q_and_a = []
     for i in all:
         local_q = i.question
@@ -50,8 +62,8 @@ def check_index(index):
     else:
         return True
 
-def get_index(deta=get_data()):
-    index = randint(0, len(data)-1)
+def get_index(data=get_data()):
+    index = randint(0, len(data))
     check = check_index(index)
     if check == True:
         used_q_num.append(index)
@@ -72,7 +84,7 @@ def done():
     global used_q_num
     global data
     print('used_q_num length: ', len(used_q_num))
-    if len(used_q_num) >= len(data)-20:
+    if len(used_q_num) >= len(data):
         return True
     else:
         return False
@@ -145,7 +157,6 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        print('done: ', done())
         if done() == False:
             return question
         else:
@@ -178,6 +189,5 @@ def rsplit(section):
         for i in data:
             for q,a in i.items():
                 rd.append(q)
-        print('rd: ', rd)
         return jsonify({'Q':rd})
 

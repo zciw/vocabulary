@@ -32,6 +32,7 @@
                 .then(response=>response.text())
                 .then(text=>{            
                     if (section=='page3') {
+                        document.querySelector('#p').innerHTML='' 
                         sample = JSON.parse(text);
                         console.log('sample: ', sample["Q"][0])
                         t=''
@@ -41,7 +42,6 @@
                             }
                                 }
                     else if(section=='page2'){
-                       console.log('two')
                        document.querySelector('#uq').innerHTML = text;     
                           }
                     else if(section=='page1')
