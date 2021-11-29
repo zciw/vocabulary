@@ -1,5 +1,4 @@
-from flask import Flask, request, redirect, send_from_directory, session
-from flask import render_template, jsonify, make_response, url_for
+from flask import Flask, request, redirect, session,  render_template, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
 import json
@@ -10,7 +9,6 @@ app.secret_key = b'gdshsgh/.,565'
 db = SQLAlchemy(app)
 used_q_num=[]
 success = False
-g_key = ''
 user='anonimowy'
 # /// three slashes means relative path
 
@@ -78,7 +76,6 @@ def get_q(index=q_num, data=get_data()):
     for i in question.keys():
         return i
 
-question = get_q()
 
 def done():
     global used_q_num
@@ -158,6 +155,8 @@ def rsplit(section):
 
     elif section == 'page2':
         if done() == False:
+            data = get_data()
+            question = get_q(data=data)
             return question
         else:
             return 'gratulacje przerobiłaś wszystko na dziś'
@@ -168,8 +167,6 @@ def rsplit(section):
             global success
             success = False
             target = request.json['userAnswer']
-            print('q_num and q: ', q_num, get_q(index=q_num))
-            print('sys_answ: ', data[q_num][get_q(index=q_num)])
             if target == data[q_num][get_q(index=q_num)]:
                 print('success')
                 success = True

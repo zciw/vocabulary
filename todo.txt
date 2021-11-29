@@ -1,4 +1,5 @@
-[] fork
+[X] fork
+[] fix user po wylogowaniu na froncie
 [] learn session
 [] learn and build login
 [] git fork for pythonanywhere version
