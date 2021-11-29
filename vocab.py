@@ -39,6 +39,9 @@ class Training(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
     user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
     right = db.Column(db.Boolean, default=False, nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('vocab.id', nullable=False)
+    def __repr__(self):
+        return f'{self.answered}'
 
 def get_user_id():
     id = 1
