@@ -1,7 +1,10 @@
 from flask import Flask, request, redirect, session,  render_template, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import json
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
@@ -28,6 +31,14 @@ class Vocab(db.Model):
     user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
     def __repr__(self):
         return f' has Question: {self.question} and And Answer: {self.answer}'
+
+class Training(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    now  = datetime.datetime.now()
+    answered = db.Column(db.DateTime, default=datetime.datetime.utcnow())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+    user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
+    right = db.Column(db.Boolean, default=False, nullable=False)
 
 def get_user_id():
     id = 1
@@ -61,6 +72,10 @@ def check_index(index):
         return True
 
 def get_index(data=get_data()):
+    global used_q_num
+    l = len(data)
+    if len(used_q_num) >= l:
+        return 'enough'
     index = randint(0, len(data))
     check = check_index(index)
     if check == True:
