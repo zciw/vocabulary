@@ -2,7 +2,6 @@ from flask import Flask, request, redirect, session,  render_template, jsonify, 
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
 from datetime import datetime
-from zoneinfo import ZoneInfo
 import json
 
 
@@ -32,16 +31,16 @@ class Vocab(db.Model):
     def __repr__(self):
         return f' has Question: {self.question} and And Answer: {self.answer}'
 
-class Training(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    now  = datetime.datetime.now()
-    answered = db.Column(db.DateTime, default=datetime.datetime.utcnow())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
-    right = db.Column(db.Boolean, default=False, nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('vocab.id', nullable=False)
-    def __repr__(self):
-        return f'{self.answered}'
+#class Training(db.Model):
+#    id = db.Column(db.Integer, primary_key=True)
+#    now  = datetime.datetime.now()
+#    answered = db.Column(db.DateTime, default=datetime.datetime.utcnow())
+#    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+#    user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
+#    right = db.Column(db.Boolean, default=False, nullable=False)
+#    question_id = db.Column(db.Integer, db.ForeignKey('vocab.id', nullable=False)
+    #  def __repr__(self):
+    #    return f'{self.answered}'
 
 def get_user_id():
     id = 1
@@ -78,7 +77,8 @@ def get_index(data=get_data()):
     global used_q_num
     l = len(data)
     if len(used_q_num) >= l:
-        return 'enough'
+        used_q_num = []
+        return l-1
     index = randint(0, len(data))
     check = check_index(index)
     if check == True:
@@ -90,6 +90,7 @@ def get_index(data=get_data()):
 q_num = get_index()
 
 def get_q(index=q_num, data=get_data()):
+    print('index at get_q', index)
     question =  data[index]
     for i in question.keys():
         return i
@@ -185,7 +186,7 @@ def rsplit(section):
             global success
             success = False
             target = request.json['userAnswer']
-            if target == data[q_num][get_q(index=q_num)]:
+            if target == data[used_q_num[0]][get_q(index=q_num)]:
                 print('success')
                 success = True
             else:
