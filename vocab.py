@@ -12,6 +12,8 @@ db = SQLAlchemy(app)
 used_q_num=[]
 success = False
 user='anonimowy'
+lesson=[]
+counter = 0
 # /// three slashes means relative path
 
 
@@ -64,8 +66,6 @@ def get_data():
         q_and_a.append(q_a)
     return q_and_a
 
-data = get_data()
-
 def check_index(index):
     global used_q_num
     if index in used_q_num:
@@ -73,33 +73,33 @@ def check_index(index):
     else:
         return True
 
-def get_index(data=get_data()):
+def get_index(data):
     global used_q_num
-    l = len(data)
+    l = len(data)-1
     if len(used_q_num) >= l:
         used_q_num = []
-        return l-1
-    index = randint(0, len(data))
+        return l
+    index = randint(0, l)
     check = check_index(index)
     if check == True:
         used_q_num.append(index)
         return index
     else:
-        return get_index()
+        return get_index(data)
 
-q_num = get_index()
+def get_q(index, data):
+    print('wywołanie!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    global lesson
+    q_and_a =  data[index]
+    for i, j in q_and_a.items():
+        excercise = (i, j)
+        lesson.append(excercise)
+        return excercise
 
-def get_q(index=q_num, data=get_data()):
-    print('index at get_q', index)
-    question =  data[index]
-    for i in question.keys():
-        return i
 
-
-def done():
+def done(data):
     global used_q_num
-    global data
-    print('used_q_num length: ', len(used_q_num))
+    print('used_q_num length: ', len(used_q_num), 'and data len is: ', len(data))
     if len(used_q_num) >= len(data):
         return True
     else:
@@ -119,6 +119,10 @@ def play():
 def login():
     if request.method == 'POST':
         session['user'] = request.form['user']
+        global lesson
+        global counter
+        lesson = []
+        counter = 0
         return redirect(url_for('play'))
     return '''
         <form method="post">
@@ -130,6 +134,10 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('user', None)
+    global lesson
+    global counter
+    lesson = []
+    counter = 0
     return redirect(url_for('play'))
 
 @app.route("/newuser", methods=['GET', 'POST'])
@@ -150,15 +158,15 @@ def newuser():
         </form>
     '''
 
-
-    
-
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
-    global data
-    global question
+    
     global q_num
-
+    global counter
+    data = get_data()
+    index = get_index(data)
+    current_question = ''
+    
     if section == 'page5':
         if request.method == 'POST':
             q = request.json['question']
@@ -173,30 +181,35 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        if done() == False:
-            data = get_data()
-            question = get_q(data=data)
-            return question
+        question = get_q(index, data)
+        if done(data) == False:
+            print('lesson: ', lesson)
+            return question[0]
         else:
             return 'gratulacje przerobiłaś wszystko na dziś'
 
     elif section == 'page4':
-        s_l = []
         if request.method == 'POST':
+            s_l=[]
+            print('lesson at page4 ', lesson)
             global success
             success = False
             target = request.json['userAnswer']
-            if target == data[used_q_num[0]][get_q(index=q_num)]:
+            print('indexat page 4', index)
+            answer =  lesson[counter][1]
+            print('right answer ', answer)
+            if target == answer:
                 print('success')
                 success = True
             else:
                 success = False
-            q_num = get_index()
+            q_num = get_index(data)
             success=str(success)
             s_l.append(success)
-            new_q = get_q(index=q_num)
-            s_l.append(new_q)
-            s_l.append(done())
+            new = get_q(index, data)
+            counter += 1
+            s_l.append(new[0])
+            print('s_l', s_l)
             return jsonify({'results':s_l})
         return s_l
     elif section == 'page3':
