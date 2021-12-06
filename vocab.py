@@ -93,7 +93,7 @@ def get_index(data):
     l = len(data)-1
     if len(used_q_num) > l:
         print('ćwiczenie gotowe')
-        return 0
+        return -1
     index = randint(0, l)
     check = check_index(index)
     if check == True:
@@ -199,6 +199,12 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
+        if index == -1:
+            return '''
+        <div class='enough'>
+            <h1>Wystarczy na dziś</h1>
+        <div>
+    '''
         question = get_q(index, data)
         if done(data) == False:
             return question[0]
@@ -207,6 +213,12 @@ def rsplit(section):
 
     elif section == 'page4':
         if request.method == 'POST':
+            if index == -1:
+                return '''
+        <div class='enough'>
+            <h1>Wystarczy na dziś</h1>
+        <div>
+    '''
             s_l=[]
             global success
             success = False
