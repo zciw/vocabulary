@@ -88,6 +88,7 @@ def check_index(index):
 # funkcja sprawdza czy dany index znajduje sie na liscie uzytych pytan i odpowiedzi
 
 def get_index(data):
+    print('wywołanie get_index')
     global used_q_num
     l = len(data)-1
     if len(used_q_num) > l:
