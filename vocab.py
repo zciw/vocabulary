@@ -9,13 +9,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 app.secret_key = b'gdshsgh/.,565'
 db = SQLAlchemy(app)
-used_q_num=[]
+used_q_num = []
+# lista użytych indeksów
 success = False
 user='anonimowy'
 lesson=[]
 counter = 0
 # /// three slashes means relative path
-
 
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
@@ -23,6 +23,8 @@ class User(db.Model):
 
     def __repr__(self):
         return f'name: {self.name}'
+
+# user użytkownika
 
 class Vocab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,6 +34,8 @@ class Vocab(db.Model):
     user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
     def __repr__(self):
         return f' has Question: {self.question} and And Answer: {self.answer}'
+
+# model pytań i odpowiedzi
 
 #class Training(db.Model):
 #    id = db.Column(db.Integer, primary_key=True)
@@ -44,6 +48,8 @@ class Vocab(db.Model):
     #  def __repr__(self):
     #    return f'{self.answered}'
 
+# model wykonywanych ćwiczeń
+
 def get_user_id():
     id = 1
     if session:
@@ -55,8 +61,11 @@ def get_user_id():
         return id
     return id
 
+# funkcja zwraca primary_key aktualnie zalogowanego użytkownika lub jeżeli nikt nie jest zalogowany zwarca pk admina
+
 def get_data():
     all = Vocab.query.filter_by(user_id=get_user_id()).all()
+    print('len of all ', len(all))
     q_and_a = []
     for i in all:
         local_q = i.question
@@ -66,19 +75,24 @@ def get_data():
         q_and_a.append(q_a)
     return q_and_a
 
+# funkcja zwraca liste pytań i odpowiedzi  aktualnie zalogowanego użytkownika lub admina
+
 def check_index(index):
     global used_q_num
+    print('used_q_num: ', used_q_num)
     if index in used_q_num:
         return False
     else:
         return True
 
+# funkcja sprawdza czy dany index znajduje sie na liscie uzytych pytan i odpowiedzi
+
 def get_index(data):
     global used_q_num
     l = len(data)-1
-    if len(used_q_num) >= l:
-        used_q_num = []
-        return l
+    if len(used_q_num) > l:
+        print('ćwiczenie gotowe')
+        return 0
     index = randint(0, l)
     check = check_index(index)
     if check == True:
@@ -87,8 +101,10 @@ def get_index(data):
     else:
         return get_index(data)
 
+# powinna zwrócić index nie zadanego pytania
+
 def get_q(index, data):
-    print('wywołanie!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    print('inddex at get q: ', index)
     global lesson
     q_and_a =  data[index]
     for i, j in q_and_a.items():
@@ -96,15 +112,16 @@ def get_q(index, data):
         lesson.append(excercise)
         return excercise
 
+# funkcja zwraca pytanie i odpowiedź
 
 def done(data):
     global used_q_num
-    print('used_q_num length: ', len(used_q_num), 'and data len is: ', len(data))
     if len(used_q_num) >= len(data):
         return True
     else:
         return False
 
+# funkcja sprawdza czy wszystkie ćwiczenia zostały wykonanane
 
 @app.route("/", methods=['GET', 'POST'])
 def play():
@@ -183,7 +200,6 @@ def rsplit(section):
     elif section == 'page2':
         question = get_q(index, data)
         if done(data) == False:
-            print('lesson: ', lesson)
             return question[0]
         else:
             return 'gratulacje przerobiłaś wszystko na dziś'
@@ -191,27 +207,24 @@ def rsplit(section):
     elif section == 'page4':
         if request.method == 'POST':
             s_l=[]
-            print('lesson at page4 ', lesson)
             global success
             success = False
             target = request.json['userAnswer']
             print('indexat page 4', index)
             answer =  lesson[counter][1]
-            print('right answer ', answer)
             if target == answer:
-                print('success')
                 success = True
             else:
                 success = False
-            q_num = get_index(data)
             success=str(success)
             s_l.append(success)
             new = get_q(index, data)
             counter += 1
             s_l.append(new[0])
-            print('s_l', s_l)
-            return jsonify({'results':s_l})
-        return s_l
+            if done(data) == False:
+                return jsonify({'results':s_l})
+        bmf = 'bmf bmf bmf bmf bmf bmf bmf bmf bmf bmf bmf '
+        return bmf
     elif section == 'page3':
         rd=[]
         data = get_data()
