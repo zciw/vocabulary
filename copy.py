@@ -13,6 +13,7 @@ used_q_num = []
 # lista użytych indeksów
 success = False
 user='anonimowy'
+lesson=[]
 counter = 0
 # /// three slashes means relative path
 
@@ -76,33 +77,47 @@ def get_data():
 
 # funkcja zwraca liste pytań i odpowiedzi  aktualnie zalogowanego użytkownika lub admina
 
+def check_index(index):
+    global used_q_num
+    print('used_q_num: ', used_q_num)
+    if index in used_q_num:
+        return False
+    else:
+        return True
 
 # funkcja sprawdza czy dany index znajduje sie na liscie uzytych pytan i odpowiedzi
 
 def get_index(data):
     print('wywołanie get_index')
-    l = len(data)
+    global used_q_num
+    l = len(data)-1
+    if len(used_q_num) > l:
+        print('ćwiczenie gotowe')
+        return 0
     index = randint(0, l)
-    return index
+    check = check_index(index)
+    if check == True:
+        used_q_num.append(index)
+        return index
+    else:
+        return get_index(data)
 
 # powinna zwrócić index nie zadanego pytania
 
 def get_q(index, data):
     print('inddex at get q: ', index)
+    global lesson
     q_and_a =  data[index]
     for i, j in q_and_a.items():
         excercise = (i, j)
+        lesson.append(excercise)
         return excercise
 
 # funkcja zwraca pytanie i odpowiedź
 
-
-def check_answer(index, data):
-    target = request.json['userAnswer']
-    answer = data[index]
-    if target == answer:
-        del data[index]
-        print('data at check_answer after right answer: ', data)
+def done(data):
+    global used_q_num
+    if len(used_q_num) >= len(data):
         return True
     else:
         return False
@@ -122,6 +137,9 @@ def play():
 def login():
     if request.method == 'POST':
         session['user'] = request.form['user']
+        global lesson
+        global counter
+        lesson = []
         counter = 0
         return redirect(url_for('play'))
     return '''
@@ -134,7 +152,9 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('user', None)
+    global lesson
     global counter
+    lesson = []
     counter = 0
     return redirect(url_for('play'))
 
@@ -180,27 +200,38 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        print(data)
-        if data:
-            question = get_q(index, data)
+        question = get_q(index, data)
+        if done(data) == False:
             return question[0]
         else:
             return congrats
 
     elif section == 'page4':
         if request.method == 'POST':
-            result = check_answer(index=index, data=data)
-            if data:
-                q = get_q(index, data)
-                q_a = ['True', q]
-                return jsonify({'results':q_a})
+            s_l=[]
+            global success
+            success = False
+            target = request.json['userAnswer']
+            print('indexat page 4', index)
+            answer =  lesson[counter][1]
+            if target == answer:
+                success = True
             else:
-                return congrats
-        return '<h1>coś nie tak</h1>'
+                success = False
+            success=str(success)
+            s_l.append(success)
+            new = get_q(index, data)
+            counter += 1
+            s_l.append(new[0])
+            if done(data) == False:
+                return jsonify({'results':s_l})
+            else:
+                return congrats 
+        return <h1>coś nie tak</h1>
     elif section == 'page3':
         rd=[]
-        material = get_data()
-        for i in material:
+        data = get_data()
+        for i in data:
             for q,a in i.items():
                 rd.append(q)
         return jsonify({'Q':rd})
