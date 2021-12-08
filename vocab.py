@@ -15,6 +15,9 @@ success = False
 user='anonimowy'
 counter = 0
 # /// three slashes means relative path
+data = []
+index = int()
+
 
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
@@ -76,12 +79,9 @@ def get_data():
 
 # funkcja zwraca liste pytań i odpowiedzi  aktualnie zalogowanego użytkownika lub admina
 
-
-# funkcja sprawdza czy dany index znajduje sie na liscie uzytych pytan i odpowiedzi
-
 def get_index(data):
     print('wywołanie get_index')
-    l = len(data)
+    l = len(data)-1
     index = randint(0, l)
     return index
 
@@ -98,8 +98,15 @@ def get_q(index, data):
 
 
 def check_answer(index, data):
+    print('index at check_answer: ', index)
+    print('data at check_answer', data)
     target = request.json['userAnswer']
-    answer = data[index]
+    answer_dict = data[index]
+    key = ''
+    for i in answer_dict.keys():
+        key = i
+    answer = answer_dict[key]
+    print(target , ' ', answer, ' at check_answer')
     if target == answer:
         del data[index]
         print('data at check_answer after right answer: ', data)
@@ -161,10 +168,13 @@ def rsplit(section):
     
     global q_num
     global counter
+    global data
     data = get_data()
-    index = get_index(data)
+    global index
     current_question = ''
     congrats = '<h1>Gratulacje przerobiłaś wszystko na dziś</h1>'
+
+    print('index at rsplit: ', index)
 
     if section == 'page5':
         if request.method == 'POST':
@@ -180,8 +190,8 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-        print(data)
         if data:
+            index = get_index(data)
             question = get_q(index, data)
             return question[0]
         else:
@@ -192,7 +202,8 @@ def rsplit(section):
             result = check_answer(index=index, data=data)
             if data:
                 q = get_q(index, data)
-                q_a = ['True', q]
+                q_a = [result, q[0]]
+                print('to zwraca page4: ', q_a)
                 return jsonify({'results':q_a})
             else:
                 return congrats
