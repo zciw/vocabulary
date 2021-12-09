@@ -1,3 +1,10 @@
+[] biore liste pytan
+[] zadaje przypadkowe pytanie
+[] jezeli dobra odpowiedz wywalam pytanie z listy
+[] jesli zła zadaje kolejne przypadkowe pytanie
+
+
+
 [X] fork
 [] fix user po wylogowaniu na froncie
 [] learn session

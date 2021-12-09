@@ -3,17 +3,19 @@ from flask_sqlalchemy import SQLAlchemy
 from random import randint
 from datetime import datetime
 import json
-from lesson import Lesson
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 app.secret_key = b'gdshsgh/.,565'
 db = SQLAlchemy(app)
+used_q_num = []
+# lista użytych indeksów
+success = False
 user='anonimowy'
+lesson=[]
 counter = 0
 # /// three slashes means relative path
-
-
 
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
@@ -55,6 +57,7 @@ def get_user_id():
         un = session['user']
         u = User.query.filter_by(name=un).first()
         id = u.id
+        print('id: ', id)
         return id
     return id
 
@@ -74,7 +77,6 @@ def get_data():
 
 # funkcja zwraca liste pytań i odpowiedzi  aktualnie zalogowanego użytkownika lub admina
 
-<<<<<<< HEAD
 def check_index(index):
     global used_q_num
     print('used_q_num: ', used_q_num)
@@ -91,7 +93,7 @@ def get_index(data):
     l = len(data)-1
     if len(used_q_num) > l:
         print('ćwiczenie gotowe')
-        return -1
+        return 0
     index = randint(0, l)
     check = check_index(index)
     if check == True:
@@ -121,11 +123,6 @@ def done(data):
         return False
 
 # funkcja sprawdza czy wszystkie ćwiczenia zostały wykonanane
-=======
-data = None
-lesson = None
-excercise = None
->>>>>>> login
 
 @app.route("/", methods=['GET', 'POST'])
 def play():
@@ -133,13 +130,16 @@ def play():
         print(f'użytkownik zalogowany {session["user"]}')
         global user
         user = session['user']
-        return render_template('spa.html', success='False', user=user)
+        return render_template('spa.html', success=str(success), user=user)
     return render_template('spa.html', success=str(success), user=user)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         session['user'] = request.form['user']
+        global lesson
+        global counter
+        lesson = []
         counter = 0
         return redirect(url_for('play'))
     return '''
@@ -152,7 +152,9 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('user', None)
+    global lesson
     global counter
+    lesson = []
     counter = 0
     return redirect(url_for('play'))
 
@@ -179,12 +181,8 @@ def rsplit(section):
     
     global q_num
     global counter
-    global lesson
-    global excercise
-    global data
-
-
-
+    data = get_data()
+    index = get_index(data)
     current_question = ''
     congrats = '<h1>Gratulacje przerobiłaś wszystko na dziś</h1>'
 
@@ -202,51 +200,38 @@ def rsplit(section):
         return 'wtf2'
 
     elif section == 'page2':
-<<<<<<< HEAD
-        if index == -1:
-            return '''
-        <div class='enough'>
-            <h1>Wystarczy na dziś</h1>
-        <div>
-    '''
         question = get_q(index, data)
         if done(data) == False:
             return question[0]
         else:
-            return 'gratulacje przerobiłaś wszystko na dziś'
+            return congrats
 
     elif section == 'page4':
         if request.method == 'POST':
-            if index == -1:
-                return '''
-        <div class='enough'>
-            <h1>Wystarczy na dziś</h1>
-        <div>
-    '''
             s_l=[]
             global success
             success = False
-=======
-        data = get_data()
-        lesson = Lesson(data)
-        excercise = lesson.make_excercise()
-        question = excercise[1]
-        return question
-
-    elif section == 'page4':
-        if request.method == 'POST':
->>>>>>> login
             target = request.json['userAnswer']
-            result = lesson.check_excercise(target ,excercise[2],excercise[0])
-            excercise = lesson.make_excercise()
-            question = excercise[1]
-            q_a = [result, question]
-            return({'results':q_a})
-        return '<h1>coś nie tak</h1>'
+            print('indexat page 4', index)
+            answer =  lesson[counter][1]
+            if target == answer:
+                success = True
+            else:
+                success = False
+            success=str(success)
+            s_l.append(success)
+            new = get_q(index, data)
+            counter += 1
+            s_l.append(new[0])
+            if done(data) == False:
+                return jsonify({'results':s_l})
+            else:
+                return congrats 
+        return <h1>coś nie tak</h1>
     elif section == 'page3':
         rd=[]
-        material = get_data()
-        for i in material:
+        data = get_data()
+        for i in data:
             for q,a in i.items():
                 rd.append(q)
         return jsonify({'Q':rd})
