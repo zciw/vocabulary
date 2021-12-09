@@ -12,7 +12,7 @@ db = SQLAlchemy(app)
 user='anonimowy'
 counter = 0
 # /// three slashes means relative path
-
+# fake coment
 
 
 class User(db.Model):
