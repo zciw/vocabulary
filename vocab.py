@@ -4,6 +4,10 @@ from random import randint
 from datetime import datetime
 import json
 from lesson import Lesson
+filename = 'vocab.txt'
+
+
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
@@ -85,7 +89,7 @@ def play():
         global user
         user = session['user']
         return render_template('spa.html', success='False', user=user)
-    return render_template('spa.html', success=str(success), user=user)
+    return render_template('spa.html', success='False', user=user)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -162,9 +166,11 @@ def rsplit(section):
     elif section == 'page4':
         if request.method == 'POST':
             target = request.json['userAnswer']
-            result = lesson.check_excercise(target ,excercise[2],excercise[0])
+            result = lesson.check_excercise(target ,excercise[2],excercise[0]) 
             excercise = lesson.make_excercise()
             question = excercise[1]
+            with open(filename, 'a') as f:
+                f.write(f'{result}\n')
             q_a = [result, question]
             return({'results':q_a})
         return '<h1>coś nie tak</h1>'
