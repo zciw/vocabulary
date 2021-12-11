@@ -1,37 +1,49 @@
 <!DOCTYPE html>
 <html lang='en'>
-    <head>
-        <title>spa</title>
-        <link rel="stylesheet" href="static/main.css">
-        <script src="static/spa.js"></script>
-    </head>
-        <body>
-            <form action='/login'><input type='submit' value='zaloguj'/></form>
-            <form action='/logout'><input type='submit' value='wyloguj'/></form>
-            <form action='/newuser'><input type='submit' value='nowy użytkownik'/></form>
-            <h1>użytkownik: {{user}}</h1>
-            <button class='click' data-page='page1'>nowe</button>
-            <button class='click' data-page='page2'>ucz się</button>
-            <button class='click' data-page='page3'>lista</button>
-            <button class='click' data-page='page4'>ukryj wszystko</button>
-            <div class='spa' id='page1'>
-                    <label for="q">Pytanie:</label><br>
-                    <input id='q' type="text" name='question' placeholder="tutaj wpisz nowe pytanie"><br>
-                    <label for="a">Odpowiedź:</label><br>
-                    <input id='a' type="text" name='answer' placeholder="tutaj wpisz nową odpowiedź"><br><br>
-                    <button class='click' data-page='page5' type="submit">Wyśli</button>
-            </div>
-            <div class='spa' id='page2'>
-                    <h1 id="uq">uq</h1>
-                    <label>question</label>
-                    <input id='usa' type="text" name="userQuestion"><br>
-                    <button class = 'click' data-page = 'page4'>submit</button>
-            </div>
-            <div class='spa' id='page3'>
-                <h1>Lista pytań</h1>
-                <div id='p'></div>
-            </div>
-            <h4 id='success'>Result: {{success}}</h4>
-            <h3 id='q'></h3>
-            <div class='spa' id='page4'><h3>page 4</h3></div>
-        </body>
+
+<head>
+    <title>Słówka</title>
+    <link rel="stylesheet" href="static/main.css">
+    <script src="static/spa.js"></script>
+</head>
+
+<body>
+    <div class="end">
+        <h1>end</h1>
+    </div>
+    <div class="all">
+        <div>
+            <form action='/login'><input type='submit' value='zaloguj' /></form>
+            <form action='/logout'><input type='submit' value='wyloguj' /></form>
+            <form action='/newuser'><input type='submit' value='nowy użytkownik' /></form>
+        </div>
+        <h1>użytkownik: {{user}}</h1>
+        <button class='click' data-page='page1'>nowe</button>
+        <button class='click' data-page='page2'>ucz się</button>
+        <button class='click' data-page='page3'>lista</button>
+        <button class='click' data-page='page6'>ukryj wszystko</button>
+
+        <div class='spa' id='page1'>
+            <label for="q">Pytanie:</label><br>
+            <input id='q' type="text" name='question' placeholder="tutaj wpisz nowe pytanie"><br>
+            <label for="a">Odpowiedź:</label><br>
+            <input id='a' type="text" name='answer' placeholder="tutaj wpisz nową odpowiedź"><br><br>
+            <button class='click' data-page='page5' type="submit">Wyśli</button>
+        </div>
+        <div class='spa' id='page2'>
+            <h1 id="uq">uq</h1>
+            <label>question</label>
+            <input id='usa' type="text" name="userQuestion"><br>
+            <button class='click' data-page='page4'>submit</button>
+        </div>
+        <div class='spa' id='page3'>
+            <h1>Lista pytań</h1>
+            <div id='p'></div>
+        </div>
+        <h4 id='success'>Result: {{success}}</h4>
+        <h3 id='q'></h3>
+        <div class='spa' id='page4'>
+            <h3>page 4</h3>
+        </div>
+    </div>
+</body>

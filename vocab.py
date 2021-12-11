@@ -6,9 +6,6 @@ import json
 from lesson import Lesson
 filename = 'vocab.txt'
 
-
-
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 app.secret_key = b'gdshsgh/.,565'
@@ -16,8 +13,6 @@ db = SQLAlchemy(app)
 user='anonimowy'
 counter = 0
 # /// three slashes means relative path
-# fake comment
-
 
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
