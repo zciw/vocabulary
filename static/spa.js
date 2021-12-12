@@ -21,8 +21,9 @@ function postInput(section, dict) {
             let j = json;
             document.querySelector('#success').innerHTML = j.results[0]
             document.querySelector('#uq').innerHTML = j.results[1]
-            let done = j.results[2]
-            if (done == true) { alert('na dziś to wszystko') }
+            let done = j.results[0]
+            console.log(done)
+            if (done === 'fertig') { hide() }
         })
 }
 

@@ -16,18 +16,18 @@ class Lesson():
             answer = data[question]
             excercise = [index, question, answer]
             return excercise
-        end = ['','Gratulacje to tyle na dziś', '']
+        end = ['end','', '']
         return end
 
     def check_excercise(self, user_answer, answer, index):
-        print('user answer: ', user_answer)
-        print('answer: ', answer)
         if user_answer == answer:
             del self.q_and_a[index]
-            print(self.q_and_a)
-            return True
+            if self.q_and_a:
+                return True
+            else:
+                print('fertig')
+                return 'fertig'
         else:
-            print('false')
             return False
 
     

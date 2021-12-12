@@ -2,7 +2,7 @@
 [] zadaje przypadkowe pytanie
 [] jezeli dobra odpowiedz wywalam pytanie z listy
 [] jesli zła zadaje kolejne przypadkowe pytanie
-
+[] Vocab model unique = False
 
 
 [X] fork
