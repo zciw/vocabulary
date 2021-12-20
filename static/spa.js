@@ -1,3 +1,12 @@
+function hideLogin() {
+    let user = document.querySelector('#user').innerHTML 
+    if(user != 'anonimowy') {
+    console.log('user: ', user)
+    document.querySelector('#login').style.display = 'none';
+    document.querySelector('#user').style.display = 'none'
+    }
+}
+
 function hide() {
     document.querySelectorAll('.all').forEach(div => {
         div.style.display = 'none';
@@ -55,6 +64,7 @@ function showPage(page) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+   // hideLogin()
     document.querySelectorAll('.click').forEach(button => {
         button.onclick = function () {
             if (this.dataset.page === 'page4') {

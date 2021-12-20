@@ -13,15 +13,14 @@
     </div>
     <div class="all">
         <div class="nav">
-            <form action='/login'><input type='submit' value='zaloguj' /></form>
+            <form action='/login'><input id='login' type='submit' value='zaloguj' /></form>
             <form action='/logout'><input type='submit' value='wyloguj' /></form>
             <form action='/newuser'><input type='submit' value='nowy użytkownik' /></form>
         </div>
-        <h1>użytkownik: {{user}}</h1>
+        <h1>użytkownik: <span id='user'>{{user}}</span></h1>
         <button class='click' data-page='page1'>nowe</button>
         <button class='click' data-page='page2'>ucz się</button>
         <button class='click' data-page='page3'>lista</button>
-        <button class='click' data-page='page6'>ukryj wszystko</button>
 
         <div class='spa' id='page1'>
             <label for="q">Pytanie:</label><br>

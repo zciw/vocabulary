@@ -11,7 +11,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
 app.secret_key = b'gdshsgh/.,565'
 db = SQLAlchemy(app)
 user='anonimowy'
-counter = 0
 # /// three slashes means relative path
 
 class User(db.Model):
@@ -90,7 +89,7 @@ def play():
 def login():
     if request.method == 'POST':
         session['user'] = request.form['user']
-        counter = 0
+        print(session)
         return redirect(url_for('play'))
     return '''
         <form method="post">
@@ -102,8 +101,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('user', None)
-    global counter
-    counter = 0
+    print(session)
     return redirect(url_for('play'))
 
 @app.route("/newuser", methods=['GET', 'POST'])
@@ -128,7 +126,6 @@ def newuser():
 def rsplit(section):
     
     global q_num
-    global counter
     global lesson
     global excercise
     global data
