@@ -3,7 +3,7 @@
 [] jezeli dobra odpowiedz wywalam pytanie z listy
 [] jesli zła zadaje kolejne przypadkowe pytanie
 [] Vocab model unique = False
-
+[] https://www.youtube.com/watch?v=11GqEuh81E4
 
 [X] fork
 [] fix user po wylogowaniu na froncie

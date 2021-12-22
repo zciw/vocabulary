@@ -31,21 +31,6 @@ class Vocab(db.Model):
     def __repr__(self):
         return f' has Question: {self.question} and And Answer: {self.answer}'
 
-# model pytań i odpowiedzi
-
-#class Training(db.Model):
-#    id = db.Column(db.Integer, primary_key=True)
-#    now  = datetime.datetime.now()
-#    answered = db.Column(db.DateTime, default=datetime.datetime.utcnow())
-#    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-#    user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
-#    right = db.Column(db.Boolean, default=False, nullable=False)
-#    question_id = db.Column(db.Integer, db.ForeignKey('vocab.id', nullable=False)
-    #  def __repr__(self):
-    #    return f'{self.answered}'
-
-# model wykonywanych ćwiczeń
-
 def get_user_id():
     id = 1
     if session:
@@ -101,6 +86,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('user', None)
+    session['user'] = 'anonimowy'
     print(session)
     return redirect(url_for('play'))
 
