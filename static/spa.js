@@ -78,6 +78,12 @@ function showPage(page) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    const night = document.querySelector('.night');
+    night.addEventListener('click', function () {
+        document.body.classList.toggle('dark');
+    });
+
+
     document.querySelectorAll('.click').forEach(button => {
         button.onclick = function () {
             if (this.dataset.page === 'page4') {
