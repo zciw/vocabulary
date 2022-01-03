@@ -115,9 +115,6 @@ def rsplit(section):
     global lesson
     global excercise
     global data
-
-
-
     current_question = ''
     congrats = '<h1>Gratulacje przerobiłaś wszystko na dziś</h1>'
 
@@ -152,6 +149,7 @@ def rsplit(section):
             q_a = [result, question]
             return({'results':q_a})
         return '<h1>coś nie tak</h1>'
+
     elif section == 'page3':
         rd=[]
         material = get_data()
@@ -159,4 +157,13 @@ def rsplit(section):
             for q,a in i.items():
                 rd.append(q)
         return jsonify({'Q':rd})
+
+    elif section == 'page8':
+        l=[]
+        users = User.query.all()
+        for user in users:
+            item = str(user)
+            l.append(item[6:])
+        print(l)
+        return jsonify({'users':l})
 

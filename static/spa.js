@@ -57,6 +57,16 @@ function showSection(section) {
                 document.querySelector('#uq').innerHTML = text;
             }
             else if (section == 'page1') { console.log('diffrent story') }
+            else if (section == 'page8') {
+                document.querySelector('#u').innerHTML = ''
+                let u = JSON.parse(text);
+                t = ''
+                let users = u['users']
+                for (let i in users) {
+                    t = '<dl>'+ users[i] +'</dl>';
+                    document.querySelector('#u').innerHTML += t;
+                } 
+            }
         })
 }
 
