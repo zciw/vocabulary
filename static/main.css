@@ -23,14 +23,14 @@ header {
   justify-content: space-between;
 }
 
-#brand {
+#logo {
   font-weight: bold;
   font-size: 18px;
   display: flex;
   align-items: center;
 }
 
-#brand a {
+#logo a {
   color: #09c372;
 }
 
