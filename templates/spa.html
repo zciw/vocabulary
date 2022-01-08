@@ -8,23 +8,42 @@
 </head>
 
 <body>
-    <button class="night">Noc</button>
-    <div class="end">
-        <h1>end</h1>
-    </div>
     <div class="all">
-        <div class="nav">
-            <form action='/login'><input id='login' type='submit' value='zaloguj' /></form>
-            <form action='/logout'><input id='logout' type='submit' value='wyloguj' /></form>
-            <form action='/newuser'><input id='newuser' class="log" type='submit' value='nowy użytkownik' /></form>
-        </div>
-        <h1>użytkownik: <span id='user'>{{user}}</span></h1>
-        <button class='click' data-page='page1'>nowe</button>
-        <button class='click' data-page='page2'>ucz się</button>
-        <button class='click' data-page='page3'>lista</button>
-        <button class='click' data-page='page8'>ranking</button>
+        <header>
+            <div id="logo">WYKUJ</div>
+            <nav>
+                <li>Stacja Główna</li>
+                <li class="click" data-page="page1">Nowy materiał</li>
+                <li class="click" data-page="page2">Ucz się</li>
+                <li class="click" data-page="page3">Lista pytań</li>
+                <li class="click" data-page="page8">Ranking</li>
+                <li>uczeń: <span id="user">{{user}}</span></li>
+                <li></li>
+            </nav>
+        </header>
 
 
+
+
+        <nav class="navbar">
+            <div class="logo">WYKUJ</div>
+            <div class="nav">
+                <form action='/login'><input id='login' type='submit' value='zaloguj' /></form>
+                <form action='/logout'><input id='logout' type='submit' value='wyloguj' /></form>
+                <form action='/newuser'><input id='newuser' class="log" type='submit' value='nowy użytkownik' /></form>
+            </div>
+            <ul class="menu">
+
+                <li></li><button class='click' data-page='page1'>nowe</button></li>
+                <li></li><button class='click' data-page='page2'>ucz się</button></li>
+                <li></li><button class='click' data-page='page3'>lista</button></li>
+                <li></li><button class='click' data-page='page8'>ranking</button></li>
+                <li><button class="night">Noc</button></li>
+                <li>
+                    <h1>użytkownik: <span id='user'>{{user}}</span></h1>
+                </li>
+            </ul>
+        </nav>
         <div class='spa' id='page1'>
             <label for="q">Pytanie:</label><br>
             <input id='q' type="text" name='question' placeholder="tutaj wpisz nowe pytanie"><br>
@@ -37,21 +56,26 @@
             <label>question</label>
             <input id='usa' type="text" name="userQuestion"><br>
             <button class='click' data-page='page4'>submit</button>
+            <h4 id='success'>Result: {{success}}</h4>
         </div>
         <div class='spa' id='page3'>
             <h1>Lista pytań</h1>
             <div id='p'></div>
         </div>
-        <h4 id='success'>Result: {{success}}</h4>
         <h3 id='q'></h3>
         <div class='spa' id='page4'>
-            <h3>page 4</h3>
+            <h3>empty id4</h3>
         </div>
         <div class='spa' id='page8'>
             <h2>Ranking</h3>
-            <div id='u'></div>
+                <div id='u'></div>
         </div>
 
 
     </div>
+    <div class="end">
+        <h1>end</h1>
+    </div>
+
+
 </body>

@@ -1,6 +1,6 @@
 function hideAndShowLoginAndUser() {
     let user = document.querySelector('#user');
-    if(user.innerHTML != 'anonimowy') {
+    if (user.innerHTML != 'anonimowy') {
         document.querySelector('#login').style.display = 'none';
         document.querySelector('#logout').style.display = 'block';
         document.querySelector('#newuser').style.display = 'none';
@@ -18,6 +18,10 @@ function hide() {
     document.querySelectorAll('.end').forEach(div => {
         div.style.display = 'block';
     });
+}
+
+function showResult() {
+    document.querySelector('#success').style.display = 'block'
 }
 
 function postInput(section, dict) {
@@ -52,20 +56,17 @@ function showSection(section) {
                     t = '<dl>' + sample["Q"][i] + '</dl>';
                     document.querySelector('#p').innerHTML += t;
                 }
-            }
-            else if (section == 'page2') {
+            } else if (section == 'page2') {
                 document.querySelector('#uq').innerHTML = text;
-            }
-            else if (section == 'page1') { console.log('diffrent story') }
-            else if (section == 'page8') {
+            } else if (section == 'page1') { console.log('diffrent story') } else if (section == 'page8') {
                 document.querySelector('#u').innerHTML = ''
                 let u = JSON.parse(text);
                 t = ''
                 let users = u['users']
                 for (let i in users) {
-                    t = '<dl>'+ users[i] +'</dl>';
+                    t = '<dl>' + users[i] + '</dl>';
                     document.querySelector('#u').innerHTML += t;
-                } 
+                }
             }
         })
 }
@@ -77,35 +78,33 @@ function showPage(page) {
     document.querySelector(`#${page}`).style.display = 'block';
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     const night = document.querySelector('.night');
-    night.addEventListener('click', function () {
+    night.addEventListener('click', function() {
         document.body.classList.toggle('dark');
-        if(night.innerHTML == 'Noc'){
-        night.innerHTML = 'Dzień'
+        if (night.innerHTML == 'Noc') {
+            night.innerHTML = 'Dzień'
         } else { night.innerHTML = 'Noc' }
     });
 
 
     document.querySelectorAll('.click').forEach(button => {
-        button.onclick = function () {
+        button.onclick = function() {
             if (this.dataset.page === 'page4') {
                 text = document.getElementById('usa').value
                 var dict = { 'userAnswer': text };
+                showResult();
                 postInput(this.dataset.page, dict)
                 document.querySelector('#uq').innerHTML = 'text';
-            }
-            else if (this.dataset.page === 'page5') {
+            } else if (this.dataset.page === 'page5') {
                 var question = document.getElementById('q').value;
                 var answer = document.getElementById('a').value;
                 var dictQA = { 'question': question, 'answer': answer }
                 postInput(this.dataset.page, dictQA);
-            }
-            else if (this.dataset.page === 'page6') {
+            } else if (this.dataset.page === 'page6') {
                 console.log('six')
                 hide()
-            }
-            else {
+            } else {
                 showSection(this.dataset.page);
                 showPage(this.dataset.page);
             }
@@ -114,4 +113,3 @@ document.addEventListener('DOMContentLoaded', function () {
     let submitLog = document.querySelector('.log');
     submitLog.onclick = hideAndShowLoginAndUser()
 });
-

@@ -1,4 +1,5 @@
 from random import randint
+
 class Lesson():
 
     def __init__(self, q_and_a):
