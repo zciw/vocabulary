@@ -1,3 +1,4 @@
-function toggleMobileMenu(menu) {
-    menu.classList.toggle('open');
+function toggle(element) {
+    console.log(element.classList)
+    element.classList.toggle('open');
 }
