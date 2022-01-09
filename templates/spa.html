@@ -6,28 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="static/main.css" />
     <title>Słówka</title>
+    <script src="static/style.js"></script>
 </head>
 
 <body>
     <header>
         <div id='logo'>Słówka</div>
-        <nav>
+        <nav id='nav'>
             <ul>
                 <li>Uytkownik: </li>
                 <li>Ucz się</li>
                 <li>Nowe słówka</li>
                 <li>Lista pytań</li>
                 <li>Ranking</li>
-                <li>Zaloguj</li>
-                <li>Wyloguj</li>
-                <li>Nowy użytkownik</li>
+                <li id='login'>Zaloguj</li>
+                <li id='logout'>Wyloguj</li>
+                <li id='new_user'>Nowy użytkownik</li>
             </ul>
         </nav>
-        <div id='burger'>
-            <div class='bar'></div>
-            <div class='bar'></div>
-            <dir class='bar'></dir>
+        <div id='burger' onclick="toggle(this)">
+            <div class='bar1'></div>
+            <div class='bar2'></div>
+            <div class='bar3'></div>
         </div>
+        <div id="mobile-nav"></div>
     </header>
 </body>
 
