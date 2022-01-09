@@ -79,14 +79,31 @@ ul li {
     display: none;
 }
 
+.open #mobile-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#mobile-nav {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    height: calc(100vh - 50px);
+    width: 100%;
+}
+
+#mobile-nav li {
+    margin-bottom: 10px;
+}
+
 @media only screen and (max-width: 600px) {
     header nav {
         display: none;
     }
     #burger {
-        display: block;
-    }
-    #mobile-nav {
         display: block;
     }
 }
