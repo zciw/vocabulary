@@ -79,14 +79,6 @@ function showPage(page) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const night = document.querySelector('.night');
-    night.addEventListener('click', function() {
-        document.body.classList.toggle('dark');
-        if (night.innerHTML == 'Noc') {
-            night.innerHTML = 'Dzień'
-        } else { night.innerHTML = 'Noc' }
-    });
-
 
     document.querySelectorAll('.click').forEach(button => {
         button.onclick = function() {

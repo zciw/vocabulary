@@ -5,8 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="static/main.css" />
+    <link rel="stylesheet" href="static/game.css">
     <title>Słówka</title>
     <script src="static/style.js"></script>
+    <script src="static/spa.js"></script>
 </head>
 
 <body>
@@ -14,14 +16,15 @@
         <div id='logo'>Słówka</div>
         <nav id='nav'>
             <ul id='navl'>
-                <li>Uytkownik: </li>
-                <li>Ucz się</li>
-                <li>Nowe słówka</li>
-                <li>Lista pytań</li>
-                <li>Ranking</li>
-                <li id='login'>Zaloguj</li>
-                <li id='logout'>Wyloguj</li>
-                <li id='new_user'>Nowy użytkownik</li>
+                <li>Uytkownik: <span id='user'>{{user}}</span></li>
+                <li class='click' data-page='page2'>Ucz się</li>
+                <li class='click' data-page='page1'>Nowe słówka</li>
+                <li class='click' data-page='page3'>Lista pytań</li>
+                <li class='click' data-page='page8'>Ranking</li>
+                <li class='night'>Noc</li>
+                <li><a id='login' href='/login'>Zaloguj</a></li>
+                <li><a id='logout' href='/logout'>Wyloguj</a></li>
+                <li><a id='new_user' href='/newuser'>Nowy użytkownik</a></li>
             </ul>
         </nav>
         <div id='burger' onclick="toggle(this)">
@@ -31,6 +34,34 @@
             <ul id="mobile-nav"></ul>
         </div>
     </header>
+    <div class="all">
+        <div class='spa' id='page1'>
+            <label for="q">Pytanie:</label><br>
+            <input id='q' type="text" name='question' placeholder="tutaj wpisz nowe pytanie"><br>
+            <label for="a">Odpowiedź:</label><br>
+            <input id='a' type="text" name='answer' placeholder="tutaj wpisz nową odpowiedź"><br><br>
+            <button class='click' data-page='page5' type="submit">Wyśli</button>
+        </div>
+        <div class='spa' id='page2'>
+            <h1 id="uq">uq</h1>
+            <label>question</label>
+            <input id='usa' type="text" name="userQuestion"><br>
+            <button class='click' data-page='page4'>submit</button>
+        </div>
+        <div class='spa' id='page3'>
+            <h1>Lista pytań</h1>
+            <div id='p'></div>
+        </div>
+        <h4 id='success'>Result: {{success}}</h4>
+        <h3 id='q'></h3>
+        <div class='spa' id='page4'>
+            <h3>page 4</h3>
+        </div>
+        <div class='spa' id='page8'>
+            <h2>Ranking</h3>
+                <div id='u'></div>
+        </div>
+    </div>
 </body>
 
 </html>
