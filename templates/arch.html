@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>Słówka</title>
+    <link rel="stylesheet" href="static/main.css">
+    <script src="static/spa.js"></script>
+</head>
+
+<body>
+    <button class="night">Noc</button>
+    <div class="end">
+        <h1>end</h1>
+    </div>
+    <div class="all">
+        <div class="nav">
+            <form action='/login'><input id='login' type='submit' value='zaloguj' /></form>
+            <form action='/logout'><input id='logout' type='submit' value='wyloguj' /></form>
+            <form action='/newuser'><input id='newuser' class="log" type='submit' value='nowy użytkownik' /></form>
+        </div>
+        <h1>użytkownik: <span id='user'>{{user}}</span></h1>
+        <button class='click' data-page='page1'>nowe</button>
+        <button class='click' data-page='page2'>ucz się</button>
+        <button class='click' data-page='page3'>lista</button>
+        <button class='click' data-page='page8'>ranking</button>
+
+
+        <div class='spa' id='page1'>
+            <label for="q">Pytanie:</label><br>
+            <input id='q' type="text" name='question' placeholder="tutaj wpisz nowe pytanie"><br>
+            <label for="a">Odpowiedź:</label><br>
+            <input id='a' type="text" name='answer' placeholder="tutaj wpisz nową odpowiedź"><br><br>
+            <button class='click' data-page='page5' type="submit">Wyśli</button>
+        </div>
+        <div class='spa' id='page2'>
+            <h1 id="uq">uq</h1>
+            <label>question</label>
+            <input id='usa' type="text" name="userQuestion"><br>
+            <button class='click' data-page='page4'>submit</button>
+        </div>
+        <div class='spa' id='page3'>
+            <h1>Lista pytań</h1>
+            <div id='p'></div>
+        </div>
+        <h4 id='success'>Result: {{success}}</h4>
+        <h3 id='q'></h3>
+        <div class='spa' id='page4'>
+            <h3>page 4</h3>
+        </div>
+        <div class='spa' id='page8'>
+            <h2>Ranking</h3>
+                <div id='u'></div>
+        </div>
+
+
+    </div>
+</body>

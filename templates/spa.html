@@ -1,30 +1,40 @@
-<!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/main.css" />
+    <link rel="stylesheet" href="static/game.css">
     <title>Słówka</title>
-    <link rel="stylesheet" href="static/main.css">
+    <script src="static/style.js"></script>
     <script src="static/spa.js"></script>
 </head>
 
 <body>
-    <button class="night">Noc</button>
-    <div class="end">
-        <h1>end</h1>
-    </div>
-    <div class="all">
-        <div class="nav">
-            <form action='/login'><input id='login' type='submit' value='zaloguj' /></form>
-            <form action='/logout'><input id='logout' type='submit' value='wyloguj' /></form>
-            <form action='/newuser'><input id='newuser' class="log" type='submit' value='nowy użytkownik' /></form>
+    <header>
+        <div id='logo'>Słówka</div>
+        <nav id='nav'>
+            <ul id='navl'>
+                <li>Uytkownik: <span id='user'>{{user}}</span></li>
+                <li class='click' data-page='page2'>Ucz się</li>
+                <li class='click' data-page='page1'>Nowe słówka</li>
+                <li class='click' data-page='page3'>Lista pytań</li>
+                <li class='click' data-page='page8'>Ranking</li>
+                <li class='night'>Noc</li>
+                <li><a id='login' href='/login'>Zaloguj</a></li>
+                <li><a id='logout' href='/logout'>Wyloguj</a></li>
+                <li><a id='new_user' href='/newuser'>Nowy użytkownik</a></li>
+            </ul>
+        </nav>
+        <div id='burger' onclick="toggle(this)">
+            <div class='bar1'></div>
+            <div class='bar2'></div>
+            <div class='bar3'></div>
+            <ul id="mobile-nav"></ul>
         </div>
-        <h1>użytkownik: <span id='user'>{{user}}</span></h1>
-        <button class='click' data-page='page1'>nowe</button>
-        <button class='click' data-page='page2'>ucz się</button>
-        <button class='click' data-page='page3'>lista</button>
-        <button class='click' data-page='page8'>ranking</button>
-
-
+    </header>
+    <div class="all">
         <div class='spa' id='page1'>
             <label for="q">Pytanie:</label><br>
             <input id='q' type="text" name='question' placeholder="tutaj wpisz nowe pytanie"><br>
@@ -49,9 +59,9 @@
         </div>
         <div class='spa' id='page8'>
             <h2>Ranking</h3>
-            <div id='u'></div>
+                <div id='u'></div>
         </div>
-
-
     </div>
 </body>
+
+</html>
