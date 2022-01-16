@@ -58,7 +58,11 @@ function showSection(section) {
                 }
             } else if (section == 'page2') {
                 document.querySelector('#uq').innerHTML = text;
-            } else if (section == 'page1') { console.log('diffrent story') } else if (section == 'page8') {
+            } else if (section == 'page1') {
+                console.log('diffrent story');
+                document.getElementById('q').value = '';
+                document.getElementById('a').value = '';
+            } else if (section == 'page8') {
                 document.querySelector('#u').innerHTML = ''
                 let u = JSON.parse(text);
                 t = ''
@@ -67,6 +71,8 @@ function showSection(section) {
                     t = '<dl>' + users[i] + '</dl>';
                     document.querySelector('#u').innerHTML += t;
                 }
+
+
             }
         })
 }
@@ -88,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showResult();
                 postInput(this.dataset.page, dict)
                 document.querySelector('#uq').innerHTML = 'text';
+
             } else if (this.dataset.page === 'page5') {
                 var question = document.getElementById('q').value;
                 var answer = document.getElementById('a').value;

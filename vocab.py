@@ -15,7 +15,7 @@ user='anonimowy'
 
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(10), unique=True, nullable=False)
+    name = db.Column(db.String(20), unique=True, nullable=False)
 
     def __repr__(self):
         return f'name: {self.name}'
@@ -24,8 +24,8 @@ class User(db.Model):
 
 class Vocab(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    question = db.Column(db.String(20), unique=True, nullable=False)
-    answer = db.Column(db.String(120), unique=True, nullable=False)
+    question = db.Column(db.String(30), unique=True, nullable=False)
+    answer = db.Column(db.String(30), unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
     user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
     def __repr__(self):
