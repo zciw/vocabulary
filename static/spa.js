@@ -60,8 +60,7 @@ function showSection(section) {
                 document.querySelector('#uq').innerHTML = text;
             } else if (section == 'page1') {
                 console.log('diffrent story');
-                document.getElementById('q').value = '';
-                document.getElementById('a').value = '';
+
             } else if (section == 'page8') {
                 document.querySelector('#u').innerHTML = ''
                 let u = JSON.parse(text);
@@ -94,12 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 showResult();
                 postInput(this.dataset.page, dict)
                 document.querySelector('#uq').innerHTML = 'text';
-
+                document.getElementById('usa').value = '';
             } else if (this.dataset.page === 'page5') {
                 var question = document.getElementById('q').value;
                 var answer = document.getElementById('a').value;
                 var dictQA = { 'question': question, 'answer': answer }
                 postInput(this.dataset.page, dictQA);
+                document.getElementById('q').value = '';
+                document.getElementById('a').value = '';
             } else if (this.dataset.page === 'page6') {
                 console.log('six')
                 hide()
