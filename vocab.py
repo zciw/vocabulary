@@ -34,11 +34,15 @@ class Vocab(db.Model):
 def get_user_id():
     id = 1
     if session:
-        print('there is a session')
-        un = session['user']
-        u = User.query.filter_by(name=un).first()
-        id = u.id
-        return id
+        try:
+            print('there is a session')
+            un = session['user']
+            u = User.query.filter_by(name=un).first()
+            id = u.id
+            return id
+        except AttributeError:
+            print('exception work what now and fucktion return id no 1')
+            return id
     return id
 
 # funkcja zwraca primary_key aktualnie zalogowanego użytkownika lub jeżeli nikt nie jest zalogowany zwarca pk admina
@@ -73,6 +77,8 @@ def play():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        users = User.query.all()
+        print('users list from login funcktion: ', users)
         session['user'] = request.form['user']
         print(session)
         return redirect(url_for('play'))
@@ -133,10 +139,13 @@ def rsplit(section):
 
     elif section == 'page2':
         data = get_data()
-        lesson = Lesson(data)
-        excercise = lesson.make_excercise()
-        question = excercise[1]
-        return question
+        if data:
+            lesson = Lesson(data)
+            excercise = lesson.make_excercise()
+            question = excercise[1]
+            return question
+        else:
+            return 'no data'
 
     elif section == 'page4':
         if request.method == 'POST':
