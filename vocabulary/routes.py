@@ -1,35 +1,12 @@
-from flask import Flask, request, redirect, session,  render_template, jsonify, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask import request, redirect, session,  render_template, jsonify, url_for
 from random import randint
 from datetime import datetime
 import json
-from lesson import Lesson
+from vocabulary import app, db
+from vocabulary.models import User, Vocab, Lesson
 filename = 'vocab.txt'
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
-app.secret_key = b'gdshsgh/.,565'
-db = SQLAlchemy(app)
 user='anonimowy'
-# /// three slashes means relative path
-
-class User(db.Model):
-    id =  db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f'name: {self.name}'
-
-# user użytkownika
-
-class Vocab(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    question = db.Column(db.String(30), unique=True, nullable=False)
-    answer = db.Column(db.String(30), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
-    def __repr__(self):
-        return f' has Question: {self.question} and And Answer: {self.answer}'
 
 def get_user_id():
     id = 1
@@ -64,7 +41,6 @@ def get_data():
 data = None
 lesson = None
 excercise = None
-
 @app.route("/", methods=['GET', 'POST'])
 def play():
     if 'user' in session:
@@ -76,11 +52,19 @@ def play():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    loged = False
     if request.method == 'POST':
         users = User.query.all()
         print('users list from login funcktion: ', users)
-        session['user'] = request.form['user']
-        print(session)
+        try_user = request.form['user']
+        for i in users:
+            if str(i) == try_user:
+                loged = True
+                session['user'] = try_user
+                print('zalogowany')
+            else:
+                print(f'user: {i}, try_user: {try_user}') 
+                print('nie zalogowany')
         return redirect(url_for('play'))
     return '''
         <form method="post">
