@@ -156,7 +156,6 @@ def rsplit(section):
         users = User.query.all()
         for user in users:
             item = str(user)
-            l.append(item[6:])
-        print(l)
+            l.append(item)
         return jsonify({'users':l})
 
