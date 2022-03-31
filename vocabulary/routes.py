@@ -61,7 +61,12 @@ def login():
             if str(i) == try_user:
                 loged = True
                 session['user'] = try_user
-                print('zalogowany')
+                dbu = User.query.filter_by(name=try_user).first()
+                print('licznik zalogowań: ',dbu.logged_counter)
+                dbu.logged_counter = 2
+                db.session.commit()
+                user = User.query.filter_by(logged_counter=2).first()
+                print('logged_counter=2', user)
             else:
                 print(f'user: {i}, try_user: {try_user}') 
                 print('nie zalogowany')

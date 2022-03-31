@@ -1,13 +1,10 @@
 from random import randint
 from vocabulary import db
 
-
-print(db)
-
-
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True, nullable=False)
+    logged_counter = (db.Integer)
 
     def __repr__(self):
         return f'{self.name}'
