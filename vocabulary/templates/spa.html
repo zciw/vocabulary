@@ -16,7 +16,7 @@
         <div id='logo'>Słówka</div>
         <nav id='nav'>
             <ul id='navl'>
-                <li>Uytkownik: <span id='user'>{{user}}</span></li>
+                <li class='click' data-page='page7'>Użytkownik: <span class='user'>{{user}}</span></li>
                 <li class='click' data-page='page2'>Ucz się</li>
                 <li class='click' data-page='page1'>Nowe słówka</li>
                 <li class='click' data-page='page3'>Lista pytań</li>
@@ -58,6 +58,11 @@
         <h3 id='q'></h3>
         <div class='spa' id='page4'>
             <h3>page 4</h3>
+        </div>
+        <div class='spa' id='page7'>
+            <h1>Dane użytkownika</h1>
+            <p>Imie: {{user}}</p>
+            <p>Ilość zalogowań: {{login_counter}}</p>
         </div>
         <div class='spa' id='page8'>
             <h2>Ranking</h3>

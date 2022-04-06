@@ -1,13 +1,13 @@
 function hideAndShowLoginAndUser() {
-    let user = document.querySelector('#user');
+    let user = document.querySelector('.user');
     if (user.innerHTML != 'anonimowy') {
         document.querySelector('#login').style.display = 'none';
         document.querySelector('#logout').style.display = 'block';
-        document.querySelector('#newuser').style.display = 'none';
+        document.querySelector('#new_user').style.display = 'none';
     } else {
         document.querySelector('#login').style.display = 'block';
         document.querySelector('#logout').style.display = 'none';
-        document.querySelector('#newuser').style.display = 'block';
+        document.querySelector('#new_user').style.display = 'block';
     }
 }
 
@@ -104,12 +104,14 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (this.dataset.page === 'page6') {
                 console.log('six')
                 hide()
-            } else {
+            } else if (this.dataset.page === 'page7'){
+                showPage(this.dataset.page);
+                }    
+            else {
                 showSection(this.dataset.page);
                 showPage(this.dataset.page);
             }
         }
     })
-    let submitLog = document.querySelector('.log');
-    submitLog.onclick = hideAndShowLoginAndUser()
+    hideAndShowLoginAndUser()
 });
