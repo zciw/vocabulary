@@ -1,13 +1,13 @@
 function hideAndShowLoginAndUser() {
-    let user = document.querySelector('#user');
+    let user = document.querySelector('.user');
     if (user.innerHTML != 'anonimowy') {
         document.querySelector('#login').style.display = 'none';
         document.querySelector('#logout').style.display = 'block';
-        document.querySelector('#newuser').style.display = 'none';
+        document.querySelector('#new_user').style.display = 'none';
     } else {
         document.querySelector('#login').style.display = 'block';
         document.querySelector('#logout').style.display = 'none';
-        document.querySelector('#newuser').style.display = 'block';
+        document.querySelector('#new_user').style.display = 'block';
     }
 }
 
@@ -58,7 +58,10 @@ function showSection(section) {
                 }
             } else if (section == 'page2') {
                 document.querySelector('#uq').innerHTML = text;
-            } else if (section == 'page1') { console.log('diffrent story') } else if (section == 'page8') {
+            } else if (section == 'page1') {
+                console.log('diffrent story');
+
+            } else if (section == 'page8') {
                 document.querySelector('#u').innerHTML = ''
                 let u = JSON.parse(text);
                 t = ''
@@ -67,6 +70,8 @@ function showSection(section) {
                     t = '<dl>' + users[i] + '</dl>';
                     document.querySelector('#u').innerHTML += t;
                 }
+
+
             }
         })
 }
@@ -88,20 +93,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 showResult();
                 postInput(this.dataset.page, dict)
                 document.querySelector('#uq').innerHTML = 'text';
+                document.getElementById('usa').value = '';
             } else if (this.dataset.page === 'page5') {
                 var question = document.getElementById('q').value;
                 var answer = document.getElementById('a').value;
                 var dictQA = { 'question': question, 'answer': answer }
                 postInput(this.dataset.page, dictQA);
+                document.getElementById('q').value = '';
+                document.getElementById('a').value = '';
             } else if (this.dataset.page === 'page6') {
                 console.log('six')
                 hide()
-            } else {
+            } else if (this.dataset.page === 'page7'){
+                showPage(this.dataset.page);
+                }    
+            else {
                 showSection(this.dataset.page);
                 showPage(this.dataset.page);
             }
         }
     })
-    let submitLog = document.querySelector('.log');
-    submitLog.onclick = hideAndShowLoginAndUser()
+    hideAndShowLoginAndUser()
 });

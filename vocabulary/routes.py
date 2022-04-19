@@ -1,44 +1,25 @@
-from flask import Flask, request, redirect, session,  render_template, jsonify, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask import request, redirect, session,  render_template, jsonify, url_for
 from random import randint
 from datetime import datetime
 import json
-from lesson import Lesson
+from vocabulary import app, db
+from vocabulary.models import User, Vocab, Lesson
 filename = 'vocab.txt'
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vocab.db'
-app.secret_key = b'gdshsgh/.,565'
-db = SQLAlchemy(app)
 user='anonimowy'
-# /// three slashes means relative path
-
-class User(db.Model):
-    id =  db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(10), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f'name: {self.name}'
-
-# user użytkownika
-
-class Vocab(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    question = db.Column(db.String(20), unique=True, nullable=False)
-    answer = db.Column(db.String(120), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    user = db.relationship('User', backref=db.backref('vocabs', lazy=True))
-    def __repr__(self):
-        return f' has Question: {self.question} and And Answer: {self.answer}'
 
 def get_user_id():
     id = 1
     if session:
-        print('there is a session')
-        un = session['user']
-        u = User.query.filter_by(name=un).first()
-        id = u.id
-        return id
+        try:
+            print('there is a session')
+            un = session['user']
+            u = User.query.filter_by(name=un).first()
+            id = u.id
+            return id
+        except AttributeError:
+            print('exception work what now and fucktion return id no 1')
+            return id
     return id
 
 # funkcja zwraca primary_key aktualnie zalogowanego użytkownika lub jeżeli nikt nie jest zalogowany zwarca pk admina
@@ -60,21 +41,34 @@ def get_data():
 data = None
 lesson = None
 excercise = None
-
 @app.route("/", methods=['GET', 'POST'])
 def play():
     if 'user' in session:
         print(f'użytkownik zalogowany {session["user"]}')
         global user
         user = session['user']
-        return render_template('spa.html', success='False', user=user)
+        login_counter =  User.query.filter_by(name=user).first().logged_counter
+        print('login counter: ',login_counter)
+        return render_template('spa.html', success='False', user=user, login_counter=login_counter)
     return render_template('spa.html', success='False', user=user)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    loged = False
     if request.method == 'POST':
-        session['user'] = request.form['user']
-        print(session)
+        users = User.query.all()
+        print('users list from login funcktion: ', users)
+        try_user = request.form['user']
+        for i in users:
+            if str(i) == try_user:
+                loged = True
+                session['user'] = try_user
+                dbu = User.query.filter_by(name=try_user).first()
+                dbu.logged_counter +=1
+                db.session.commit()
+            else:
+                print(f'user: {i}, try_user: {try_user}') 
+                print('nie zalogowany')
         return redirect(url_for('play'))
     return '''
         <form method="post">
@@ -133,10 +127,13 @@ def rsplit(section):
 
     elif section == 'page2':
         data = get_data()
-        lesson = Lesson(data)
-        excercise = lesson.make_excercise()
-        question = excercise[1]
-        return question
+        if data:
+            lesson = Lesson(data)
+            excercise = lesson.make_excercise()
+            question = excercise[1]
+            return question
+        else:
+            return 'no data'
 
     elif section == 'page4':
         if request.method == 'POST':
@@ -163,7 +160,6 @@ def rsplit(section):
         users = User.query.all()
         for user in users:
             item = str(user)
-            l.append(item[6:])
-        print(l)
+            l.append(item)
         return jsonify({'users':l})
 
