@@ -16,11 +16,11 @@
         <div id='logo'>Słówka</div>
         <nav id='nav'>
             <ul id='navl'>
-                <li class='click' data-page='page7'>Użytkownik: <span class='user'>{{user}}</span></li>
-                <li class='click' data-page='page2'>Ucz się</li>
-                <li class='click' data-page='page1'>Nowe słówka</li>
-                <li class='click' data-page='page3'>Lista pytań</li>
-                <li class='click' data-page='page8'>Ranking</li>
+                <li class='click' data-page='user'>Użytkownik: <span class='user'>{{user}}</span></li>
+                <li class='click' data-page='learn'>Ucz się</li>
+                <li class='click' data-page='new_vocab'>Nowe słówka</li>
+                <li class='click' data-page='all_questions'>Lista pytań</li>
+                <li class='click' data-page='rank'>Ranking</li>
                 <li class='night'>Noc</li>
                 <li><a id='login' href='/login'>Zaloguj</a></li>
                 <li><a id='logout' href='/logout'>Wyloguj</a></li>
@@ -37,34 +37,34 @@
     <br>
     <br>
     <div class="all">
-        <div class='spa' id='page1'>
+        <div class='spa' id='new_vocab'>
             <label for="q">Pytanie:</label><br>
             <input id='q' type="text" name='question' placeholder="tutaj wpisz nowe pytanie"><br>
             <label for="a">Odpowiedź:</label><br>
             <input id='a' type="text" name='answer' placeholder="tutaj wpisz nową odpowiedź"><br><br>
-            <button class='click' data-page='page5' type="submit">Wyśli</button>
+            <button class='click' data-page='qa' type="submit">Wyśli</button>
         </div>
-        <div class='spa' id='page2'>
+        <div class='spa' id='learn'>
             <h1 id="uq">uq</h1>
             <label>question</label>
             <input id='usa' type="text" name="userQuestion"><br>
-            <button class='click' data-page='page4'>submit</button>
+            <button class='click' data-page='submit_answer'>submit</button>
         </div>
-        <div class='spa' id='page3'>
+        <div class='spa' id='all_questions'>
             <h1>Lista pytań</h1>
             <div id='p'></div>
         </div>
         <h4 id='success'>Result: {{success}}</h4>
         <h3 id='q'></h3>
-        <div class='spa' id='page4'>
+        <div class='spa' id='submit_answer'>
             <h3>page 4</h3>
         </div>
-        <div class='spa' id='page7'>
+        <div class='spa' id='user'>
             <h1>Dane użytkownika</h1>
             <p>Imie: {{user}}</p>
             <p>Ilość zalogowań: {{login_counter}}</p>
         </div>
-        <div class='spa' id='page8'>
+        <div class='spa' id='rank'>
             <h2>Ranking</h3>
                 <div id='u'></div>
         </div>

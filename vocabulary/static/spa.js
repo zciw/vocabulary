@@ -48,7 +48,7 @@ function showSection(section) {
     fetch(`/${section}`)
         .then(response => response.text())
         .then(text => {
-            if (section == 'page3') {
+            if (section == 'all_questions') {
                 document.querySelector('#p').innerHTML = ''
                 sample = JSON.parse(text);
                 t = ''
@@ -56,12 +56,12 @@ function showSection(section) {
                     t = '<dl>' + sample["Q"][i] + '</dl>';
                     document.querySelector('#p').innerHTML += t;
                 }
-            } else if (section == 'page2') {
+            } else if (section == 'learn') {
                 document.querySelector('#uq').innerHTML = text;
-            } else if (section == 'page1') {
+            } else if (section == 'new_vocab') {
                 console.log('diffrent story');
 
-            } else if (section == 'page8') {
+            } else if (section == 'rank') {
                 document.querySelector('#u').innerHTML = ''
                 let u = JSON.parse(text);
                 t = ''
@@ -87,14 +87,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.click').forEach(button => {
         button.onclick = function() {
-            if (this.dataset.page === 'page4') {
+            if (this.dataset.page === 'submit_answer') {
                 text = document.getElementById('usa').value
                 var dict = { 'userAnswer': text };
                 showResult();
                 postInput(this.dataset.page, dict)
                 document.querySelector('#uq').innerHTML = 'text';
                 document.getElementById('usa').value = '';
-            } else if (this.dataset.page === 'page5') {
+            } else if (this.dataset.page === 'qa') {
                 var question = document.getElementById('q').value;
                 var answer = document.getElementById('a').value;
                 var dictQA = { 'question': question, 'answer': answer }
@@ -104,10 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (this.dataset.page === 'page6') {
                 console.log('six')
                 hide()
-            } else if (this.dataset.page === 'page7'){
+            } else if (this.dataset.page === 'user') {
                 showPage(this.dataset.page);
-                }    
-            else {
+            } else {
                 showSection(this.dataset.page);
                 showPage(this.dataset.page);
             }

@@ -112,7 +112,7 @@ def rsplit(section):
     current_question = ''
     congrats = '<h1>Gratulacje przerobiłaś wszystko na dziś</h1>'
 
-    if section == 'page5':
+    if section == 'qa':
         if request.method == 'POST':
             q = request.json['question']
             a = request.json['answer']
@@ -125,7 +125,7 @@ def rsplit(section):
             return 'wtf1'
         return 'wtf2'
 
-    elif section == 'page2':
+    elif section == 'learn':
         data = get_data()
         if data:
             lesson = Lesson(data)
@@ -135,7 +135,7 @@ def rsplit(section):
         else:
             return 'no data'
 
-    elif section == 'page4':
+    elif section == 'submit_answer':
         if request.method == 'POST':
             target = request.json['userAnswer']
             result = lesson.check_excercise(target ,excercise[2],excercise[0]) 
@@ -147,7 +147,7 @@ def rsplit(section):
             return({'results':q_a})
         return '<h1>coś nie tak</h1>'
 
-    elif section == 'page3':
+    elif section == 'all_questions':
         rd=[]
         material = get_data()
         for i in material:
@@ -155,7 +155,7 @@ def rsplit(section):
                 rd.append(q)
         return jsonify({'Q':rd})
 
-    elif section == 'page8':
+    elif section == 'rank':
         l=[]
         users = User.query.all()
         for user in users:
