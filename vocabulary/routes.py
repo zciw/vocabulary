@@ -6,7 +6,6 @@ from vocabulary import app, db
 from vocabulary.models import User, Vocab, Lesson
 filename = 'vocab.txt'
 
-user='anonimowy'
 
 def get_user_id():
     id = 1
@@ -50,7 +49,7 @@ def play():
         login_counter =  User.query.filter_by(name=user).first().logged_counter
         print('login counter: ',login_counter)
         return render_template('spa.html', success='False', user=user, login_counter=login_counter)
-    return render_template('spa.html', success='False', user=user)
+    return redirect(url_for('login'))
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -80,7 +79,6 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('user', None)
-    session['user'] = 'anonimowy'
     print(session)
     return redirect(url_for('play'))
 
