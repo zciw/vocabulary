@@ -48,7 +48,7 @@ def play():
         user = session['user']
         login_counter =  User.query.filter_by(name=user).first().logged_counter
         print('login counter: ',login_counter)
-        return render_template('spa.html', success='False', user=user, login_counter=login_counter)
+        return jsonify({'success' :'False', 'user':user, 'login_counter':login_counter})
     return redirect(url_for('login'))
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -102,7 +102,6 @@ def newuser():
 
 @app.route("/<section>", methods=['GET', 'POST'])
 def rsplit(section):
-    
     global q_num
     global lesson
     global excercise
@@ -143,7 +142,7 @@ def rsplit(section):
                 f.write(f'{result}\n')
             q_a = [result, question]
             return({'results':q_a})
-        return '<h1>coś nie tak</h1>'
+        return jsonify({'message':'coś nie tak'})
 
     elif section == 'all_questions':
         rd=[]
