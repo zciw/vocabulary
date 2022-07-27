@@ -40,6 +40,8 @@ def get_data():
 data = None
 lesson = None
 excercise = None
+
+
 @app.route("/", methods=['GET', 'POST'])
 def play():
     if 'user' in session:
@@ -49,7 +51,12 @@ def play():
         login_counter =  User.query.filter_by(name=user).first().logged_counter
         print('login counter: ',login_counter)
         return jsonify({'success' :'False', 'user':user, 'login_counter':login_counter})
-    return redirect(url_for('login'))
+    response =  jsonify({'user':'anonimowy'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    print('methods of response : ', str(dir(response)))
+    return response
+
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
