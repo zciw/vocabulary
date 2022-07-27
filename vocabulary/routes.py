@@ -48,6 +48,7 @@ def play():
         print(f'użytkownik zalogowany {session["user"]}')
         global user
         user = session['user']
+<<<<<<< HEAD
         login_counter =  User.query.filter_by(name=user).first().logged_counter
         print('login counter: ',login_counter)
         return jsonify({'success' :'False', 'user':user, 'login_counter':login_counter})
@@ -57,6 +58,10 @@ def play():
     return response
 
 
+=======
+        return render_template('spa.html', success='False', user=user)
+    return render_template('spa.html', success='False', user=user)
+>>>>>>> parent of ffb7632... new code from macbook
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -70,8 +75,11 @@ def login():
                 loged = True
                 session['user'] = try_user
                 dbu = User.query.filter_by(name=try_user).first()
-                dbu.logged_counter +=1
+                print('licznik zalogowań: ',dbu.logged_counter)
+                dbu.logged_counter = 2
                 db.session.commit()
+                user = User.query.filter_by(logged_counter=2).first()
+                print('logged_counter=2', user)
             else:
                 print(f'user: {i}, try_user: {try_user}') 
                 print('nie zalogowany')

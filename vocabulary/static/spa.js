@@ -1,13 +1,13 @@
 function hideAndShowLoginAndUser() {
-    let user = document.querySelector('.user');
+    let user = document.querySelector('#user');
     if (user.innerHTML != 'anonimowy') {
         document.querySelector('#login').style.display = 'none';
         document.querySelector('#logout').style.display = 'block';
-        document.querySelector('#new_user').style.display = 'none';
+        document.querySelector('#newuser').style.display = 'none';
     } else {
         document.querySelector('#login').style.display = 'block';
         document.querySelector('#logout').style.display = 'none';
-        document.querySelector('#new_user').style.display = 'block';
+        document.querySelector('#newuser').style.display = 'block';
     }
 }
 
@@ -104,13 +104,21 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (this.dataset.page === 'page6') {
                 console.log('six')
                 hide()
+<<<<<<< HEAD
             } else if (this.dataset.page === 'user') {
                 showPage(this.dataset.page);
+=======
+>>>>>>> parent of ffb7632... new code from macbook
             } else {
                 showSection(this.dataset.page);
                 showPage(this.dataset.page);
             }
         }
     })
+<<<<<<< HEAD
     hideAndShowLoginAndUser()
+=======
+    let submitLog = document.querySelector('.log');
+    submitLog.onclick = hideAndShowLoginAndUser()
+>>>>>>> parent of ffb7632... new code from macbook
 });
