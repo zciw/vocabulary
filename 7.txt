@@ -1,0 +1,152 @@
+
+declare @entityNo int
+select @entityNo = isnull(max(EntityNo),0) from   [mdd].[BarcodeTemplate]
+
+--Use numeric prefix 12
+--Example: 1250042200000001 total length 16 even number
+IF NOT EXISTS (SELECT * FROM [mdd].[BarcodeTemplate] WHERE Name = 'Sales')
+BEGIN
+	INSERT INTO [mdd].[BarcodeTemplate] VALUES ( @entityNo + 1, 'Sales', 12, 'Sales Ticket', 5, '12XXXXXXXXXXXXXX', '12', 0, 0, 1, 0, 3)
+END
+else
+BEGIN
+	UPDATE [mdd].[BarcodeTemplate] set Template = '12XXXXXXXXXXXXXX', TemplatePrefix = '12' where Name = 'Sales'
+END
+/* we now have same barcode for all types of POS receipts
+select @entityNo = isnull(max(EntityNo),0) from   [mdd].[BarcodeTemplate]
+IF NOT EXISTS (SELECT * FROM [mdd].[BarcodeTemplate] WHERE Name = 'CustomerOrder')
+BEGIN
+	INSERT INTO [mdd].[BarcodeTemplate] VALUES ( @entityNo + 1, 'CustomerOrder', 12, 'Customer Order', 5, '21XXXXXXXXXXXXXX', '21', 0, 0, 1, 0, 3)
+END
+else
+BEGIN
+	UPDATE [mdd].[BarcodeTemplate] set Template = '21XXXXXXXXXXXXXX', TemplatePrefix = '21' where Name = 'CustomerOrder'
+END*/
+select @entityNo = isnull(max(EntityNo),0) from   [mdd].[BarcodeTemplate]
+IF NOT EXISTS (SELECT * FROM [mdd].[BarcodeTemplate] WHERE Name = 'Abort')
+BEGIN
+	INSERT INTO [mdd].[BarcodeTemplate] VALUES ( @entityNo + 1, 'Abort', 88, 'Abort Receipt', 5, '88XXXXXXXXXXXXXXXX', '88', 0, 0, 1, 0, 3)
+END
+else
+BEGIN
+	UPDATE [mdd].[BarcodeTemplate] set Template = '88XXXXXXXXXXXXXXXX', TemplatePrefix = '88' where Name = 'Abort'
+END
+
+/*Hardcoded 6 because it is hardcoded in C#*/
+/*UPDATE1 - modified from 6 to 1000001 becouse of conflict with core template*/
+DECLARE @tomraID INT
+SET @tomraID = 1000001
+IF NOT EXISTS (SELECT * FROM dict.BarcodeTemplateType WHERE Name = 'Tomra')
+BEGIN
+	INSERT INTO dict.BarcodeTemplateType (Id, Name, Description)
+    	VALUES (@tomraID,'Tomra','Tomra deposit item')
+END
+ELSE
+BEGIN 
+	UPDATE dict.BarcodeTemplateType set Id = @tomraID  WHERE Name = 'Tomra'
+END
+
+DECLARE @number INT
+SELECT @entityNo = ISNULL(MAX(EntityNo),0),
+	   @number = ISNULL(MAX(Number),0)
+FROM [mdd].[BarcodeTemplate]
+
+SET @entityNo = @entityNo + 1
+SET @number = @number + 1
+
+DECLARE @qrCodeId INT
+SELECT @qrCodeId = Id FROM dict.BarcodeType WHERE Name = 'QRCode'
+
+/*TOMRA RVM 980 fixed value, 3 digits
+-	RVM-vendor, 2 digits
+-	RVM serial numbers, 9 digits
+-	GLN (Global Location Number - shop id) , 13 digits
+-	Receipt printed timestamp (year month day time minute second), 4 2 2 2 2 2 digits
+-	Refund value, 6 digits, including 2 decimals
+-	Random number, 2 digits
+-	Checksum, 1 digit
+
+*/
+IF NOT EXISTS (SELECT * FROM [mdd].[BarcodeTemplate] WHERE Name = 'TOMRA QR deposit')
+BEGIN
+	INSERT INTO [mdd].[BarcodeTemplate] ([EntityNo],[Name], [Number], Description, BarcodeTemplateTypeId, Template, TemplatePrefix, NumberDigits, Decimals, EntityStateId, IsLocked, BarcodeTypeId)
+	
+	VALUES ( @entityNo, 'TOMRA QR deposit', @number, 'TOMRA QR deposit', @tomraID, '980XXXXXXXXXXXSSSSSSSSSSSSSDDDDDDDDDDDDDDPPPPPPXXC', '980', 0, 0, 1, 0, @qrCodeId) 
+END
+ELSE
+BEGIN 
+	UPDATE [mdd].[BarcodeTemplate]
+	SET 
+	Description = 'TOMRA QR deposit', BarcodeTemplateTypeId=@tomraID, Template='980XXXXXXXXXXXSSSSSSSSSSSSSDDDDDDDDDDDDDDPPPPPPXXC', TemplatePrefix = '980'
+	, NumberDigits=0, Decimals=0, EntityStateId = 1, IsLocked = 0, BarcodeTypeId  = @qrCodeId
+	WHERE Name = 'TOMRA QR deposit' 
+	
+END
+
+/*Panto 982 fixed value, 3 digits
+GLN 13 digits (shop id), Machine serial number, 9 digits, Ticket number, 9 digits,Recycle amount, 6 digits, with two decimals.
+Prize, 5 digits Security code, 16 chars Checksum, 1 digit*/
+-- Example 98200000000001110000000020000000030000010012300000000000000048
+/*DECLARE @PantoID INT
+SET @PantoID = 8
+IF NOT EXISTS (SELECT * FROM dict.BarcodeTemplateType WHERE Name = 'Panto')
+BEGIN
+	INSERT INTO dict.BarcodeTemplateType (Id, Name, Description)
+    	VALUES (@PantoID,'Panto','Panto')
+END*/
+IF NOT EXISTS (SELECT * FROM [mdd].[BarcodeTemplate] WHERE Name = 'Panto QR')
+BEGIN
+	SET @entityNo = @entityNo + 1
+	SET @number = @number + 1
+	INSERT INTO [mdd].[BarcodeTemplate] ([EntityNo],[Name], [Number], Description, BarcodeTemplateTypeId, Template, TemplatePrefix, NumberDigits, Decimals, EntityStateId, IsLocked, BarcodeTypeId)
+
+	VALUES ( @entityNo, 'Panto QR', @number, 'Panto QR', @tomraID, '982SSSSSSSSSSSSSXXXXXXXXXXXXXXXXXXRRRRRRPPPPPXXXXXXXXXXXXXXXXC', '982', 0, 0, 1, 0, @qrCodeId)                                                             
+END	
+BEGIN												 
+	UPDATE [mdd].[BarcodeTemplate] set Template = '982SSSSSSSSSSSSSXXXXXXXXXXXXXXXXXXRRRRRRPPPPPXXXXXXXXXXXXXXXXC', TemplatePrefix = '982', BarcodeTemplateTypeId = @tomraID where Name = 'Panto QR'
+													 
+END
+/*
+�	983, fixed value, 3 chars
+�	 - https://gevinst.pantelotteriet.net, fixed value 37 chars
+�	? + ticket number, 1 + 10 digits (optional)
+�	& + security code, 1 + 16 chars (optional)
+�	Checksum, 1 digit
+*/
+-- Example 983000000000000000000000000000000000000100000000002000000000000000034
+	   --- 983XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXTTTTTTTTTTTSSSSSSSSSSSSSSSSSC	
+			  	
+IF NOT EXISTS (SELECT * FROM [mdd].[BarcodeTemplate] WHERE Name = 'PantoPayoutBlocked')
+BEGIN
+	SET @entityNo = @entityNo + 1
+	SET @number = @number + 1
+	INSERT INTO [mdd].[BarcodeTemplate] ([EntityNo],[Name], [Number], Description, BarcodeTemplateTypeId, Template, TemplatePrefix, NumberDigits, Decimals, EntityStateId, IsLocked, BarcodeTypeId)
+
+	VALUES ( @entityNo, 'PantoPayoutBlocked', @number, 'PantoPayoutBlocked', @tomraID, '983XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXTTTTTTTTTTTSSSSSSSSSSSSSSSSSC', '983', 69, 0, 1, 0, @qrCodeId)                                                             
+END	
+BEGIN												 
+	UPDATE [mdd].[BarcodeTemplate] set Template = '983XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXTTTTTTTTTTTSSSSSSSSSSSSSSSSSC', TemplatePrefix = '983', BarcodeTemplateTypeId = @tomraID, NumberDigits = 69 where Name = 'PantoPayoutBlocked'
+													 
+END
+
+/* Lottery Player Card ON HOLD*/
+DECLARE @playerID INT
+SET @playerID = 1000002
+IF NOT EXISTS (SELECT * FROM dict.BarcodeTemplateType WHERE Name = 'PlayerCard')
+BEGIN
+	INSERT INTO dict.BarcodeTemplateType (Id, Name, Description)
+    	VALUES (@playerID,'PlayerCard','Player Card')
+END
+ELSE
+BEGIN 
+	delete from [mdd].[BarcodeTemplate] WHERE Name = 'Lottery Player Card'
+	UPDATE dict.BarcodeTemplateType set Id = @playerID  WHERE Name = 'PlayerCard'
+END
+
+IF NOT EXISTS (SELECT * FROM [mdd].[BarcodeTemplate] WHERE Name = 'Lottery Player Card')
+BEGIN
+	SET @entityNo = @entityNo + 1
+	SET @number = @number + 1
+	INSERT INTO [mdd].[BarcodeTemplate] ([EntityNo],[Name], [Number], Description, BarcodeTemplateTypeId, Template, TemplatePrefix, NumberDigits, Decimals, EntityStateId, IsLocked, BarcodeTypeId)
+	VALUES ( @entityNo, 'Lottery Player Card', @number, 'Lottery Player Card', @playerID, '000XXXXXXXXXXX', '000', 14, 0, 1, 0, 3) 
+END
