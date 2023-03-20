@@ -1,0 +1,255 @@
+DECLARE @barcode varchar(20);
+SET @barcode = '980';
+DECLARE @itemNo int;
+DECLARE @articleNo int;
+
+DECLARE @packageNo int;
+SELECT @packageNo = EntityNo FROM mdd.PackageUnit WHERE Name = 'EA';
+
+/*Items table */
+--PRINT 'Item'
+IF NOT EXISTS (SELECT 1 FROM mdd.Item WHERE Number = CONVERT(INT, @barcode))
+BEGIN	
+	SELECT @itemNo = MAX(EntityNo) FROM mdd.Item;
+
+	SET @itemNo = @itemNo + 1;
+	INSERT INTO [mdd].[Item]
+			   ([EntityNo], [Name], [Description], [Number], [ItemTypeId], [ContentFactor], [ContentPackageUnitNo], [PackageUnitNo], [AllowFractionalQuantity], [ShelfEdgeLabelTypeId], [PrintLabelByDefault], [SecondPriceDefinition], [LabelCalculationFactor], [ManufacturerNo], [ArticlePriceAllowed], [StockCheck], [AccountingItemTypeId], [CostValuationMethodId], [Image], [EntityStateId], [OwnerNodeNo], [IsHierarchyAllowed], [ProductInfo], [NutritionFacts], [OperationalUnitNo], [QSRProductionTypeId], [LabelText], [ButtonText], [CountryOfOriginNo], [IsStockControlOnArticleLevel], [MeasurementTypeId], [IsScaleRequired], [ItemTareNo])
+		VALUES (@itemNo, 'Tomra', 'Tomra', CONVERT(INT, @barcode), 2, 1.00000000, @packageNo, @packageNo, 0, 0, 0, 0, 1.00000000, NULL, 0, 0, 0, 0, NULL, 1, 1, 0, '', '', NULL, NULL, 'Tomra', 'Tomra', NULL, NULL, 1, 0, NULL);
+END
+ELSE
+BEGIN
+	SELECT @itemNo = EntityNo FROM mdd.Item WHERE Number = CONVERT(INT, @barcode)
+
+	UPDATE [mdd].[Item]
+	 SET [Name] = 'Tomra'
+      ,[Description] = 'Tomra'
+      ,[ItemTypeId] = 2
+      ,[ContentFactor] = 1.0000
+      ,[ContentPackageUnitNo] = @packageNo
+      ,[PackageUnitNo] = @packageNo
+      ,[AllowFractionalQuantity] = 0
+      ,[ShelfEdgeLabelTypeId] = 0
+      ,[PrintLabelByDefault] = 0
+      ,[SecondPriceDefinition] = 0
+      ,[LabelCalculationFactor] = 1.00
+      ,[ManufacturerNo] = NULL
+      ,[ArticlePriceAllowed] = 0
+      ,[StockCheck] = 0
+      ,[AccountingItemTypeId] = 0
+      ,[CostValuationMethodId] = 0
+      ,[Image] = NULL
+      ,[EntityStateId] = 1
+      ,[OwnerNodeNo] = 1
+      ,[IsHierarchyAllowed] = 0
+      ,[ProductInfo] = ''
+      ,[NutritionFacts] = ''
+      ,[OperationalUnitNo] = NULL
+      ,[QSRProductionTypeId] = NULL
+      ,[LabelText] = 'Tomra'
+      ,[ButtonText] = 'Tomra'
+      ,[CountryOfOriginNo] = NULL
+      ,[IsStockControlOnArticleLevel] = NULL
+      ,[MeasurementTypeId] = 1
+      ,[IsScaleRequired] = 0
+      ,[ItemTareNo] = NULL
+	WHERE EntityNo = @itemNo
+END
+
+/*Article table*/
+--PRINT 'Article'
+IF NOT EXISTS (SELECT 1 FROM mdd.Article WHERE [ItemNo] = @itemNo)
+BEGIN
+	SELECT @articleNo = MAX(EntityNo) FROM mdd.Article;
+	SET @articleNo = @articleNo + 1;
+	INSERT INTO [mdd].[Article]
+			   ([EntityNo] ,[Name] ,[Description] ,[ItemNo] ,[PackageUnitNo] ,[PackageSize] ,[Barcode] ,[IsMainArticle] ,[Locked] ,[SalePOSAllowed] ,[PrintLabelByDefault] ,[BarcodeTypeId] ,[Number] ,[LabelText] ,[ButtonText] ,[ItemVariantNo] ,[ArticleIdentifier] ,[Image])
+		VALUES (@articleNo, 'Tomra', 'Tomra', @itemNo, @packageNo, 1, @barcode, 1, 0, 1, 1, 0, 1, '', '', NULL, NULL, NULL);
+END
+ELSE
+BEGIN	 
+	SELECT @articleNo = EntityNo FROM mdd.Article WHERE ItemNo = @itemNo
+	UPDATE [mdd].[Article]
+	SET [Name] = 'Tomra'
+      ,[Description] = 'Tomra'
+      ,[PackageUnitNo] = @packageNo
+      ,[PackageSize] = 1
+      ,[Barcode] = @barcode
+      ,[IsMainArticle] = 1
+      ,[Locked] = 0
+      ,[SalePOSAllowed] = 1
+      ,[PrintLabelByDefault] = 1
+      ,[BarcodeTypeId] = 0
+      ,[Number] = 1
+      ,[LabelText] = ''
+      ,[ButtonText] = ''
+      ,[ItemVariantNo] = NULL
+      ,[ArticleIdentifier] = NULL
+      ,[Image] = NULL
+	WHERE EntityNo = @articleNo
+END
+
+--ArticleCode table
+--PRINT 'ArticleCode'
+IF NOT EXISTS (SELECT 1 FROM mdd.ArticleCode WHERE ArticleNo = @articleNo)
+BEGIN
+	INSERT INTO [mdd].[ArticleCode] 
+		(ArticleNo, Code, BarcodeTypeId, IsMainCode)
+		VALUES (@articleNo, @barcode, 0, 1);
+END
+ELSE
+BEGIN
+	UPDATE [mdd].[ArticleCode] 
+	SET Code =  @barcode
+		, BarcodeTypeId = 0
+		, IsMainCode = 1
+	WHERE ArticleNo = @articleNo
+END
+
+/*ArticlePrice table*/
+--PRINT 'ArticlePrice'
+--Will work for both INSERT and UPDATE
+DECLARE articlePriceCursor CURSOR STATIC FOR 
+SELECT @articleNo, Id, 0.0, EntityNo
+FROM dict.PriceType 
+CROSS JOIN mdd.Station
+WHERE Name in ('First Price', 'Second Price', 'Upper Price', 'Central Price')
+EXCEPT
+SELECT ArticleNo, PriceTypeId, PriceValue, StationNo
+FROM  [mdd].[ArticlePrice]
+WHERE ArticleNo = @articleNo
+	
+DECLARE @dummy INT, @priceType INT, @priceValue decimal(20,8),@stationNo INT
+OPEN articlePriceCursor
+FETCH NEXT FROM articlePriceCursor   
+INTO @dummy, @priceType , @priceValue, @stationNo 
+  
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+	IF EXISTS (SELECT 1 FROM
+		[mdd].[ArticlePrice]
+		WHERE ArticleNo = @articleNo
+		AND PriceTypeId = @priceType
+		AND StationNo = @stationNo)
+	BEGIN
+		UPDATE [mdd].[ArticlePrice]
+		SET PriceValue = 0.0
+		WHERE ArticleNo = @articleNo
+		AND PriceTypeId = @priceType
+		AND StationNo = @stationNo
+	END
+	ELSE
+	BEGIN
+		INSERT INTO [mdd].[ArticlePrice] (ArticleNo, PriceTypeId, PriceValue, StationNo)
+		VALUES ( @articleNo, @priceType , @priceValue, @stationNo)
+	END
+	FETCH NEXT FROM articlePriceCursor   
+	INTO @dummy, @priceType , @priceValue, @stationNo
+END
+CLOSE articlePriceCursor;  
+DEALLOCATE articlePriceCursor; 
+
+/*ItemAttributesPricePolicy table*/
+--PRINT 'ItemAttributesPricePolicy'
+IF NOT EXISTS (SELECT 1 FROM mdd.ItemAttributesPricePolicy WHERE EntityNo = @itemNo)
+BEGIN
+	INSERT INTO [mdd].[ItemAttributesPricePolicy]
+	   (EntityNo, ManagementNodeNo, IsEntityGroup, MarginValueTypeId, MarginValue, CostTypeId, CostValue, IsPriceOverrideAllowed, IsDiscountAllowed)
+		VALUES (@itemNo, 1, 0, 1, 0.00000000, 1, 0.00000000, 0, 0);
+END
+ELSE
+BEGIN
+	UPDATE [mdd].[ItemAttributesPricePolicy]
+	SET [ManagementNodeNo] = 1
+      ,[IsEntityGroup] = 0
+      ,[MarginValueTypeId] = 1
+      ,[MarginValue] = 0.0
+      ,[CostTypeId] = 1
+      ,[CostValue] = 0.0
+      ,[IsPriceOverrideAllowed] = 0
+      ,[IsDiscountAllowed] = 0
+	WHERE EntityNo = @itemNo
+END
+
+
+/*GroupingItem*/
+DECLARE @defaultEFT INT, @defaultFinancial INT, @groupingItem INT, @department INT;
+
+SELECT @defaultEFT = EntityNo FROM [mdd].[GroupingNode] 
+WHERE GroupingTypeId = 3 AND Name like '%Default%'
+
+SELECT @defaultFinancial = EntityNo FROM [mdd].[GroupingNode] 
+WHERE GroupingTypeId = 2 AND Name like '%Default%'
+
+SELECT TOP 1 @groupingItem = EntityNo FROM [mdd].[GroupingNode] 
+WHERE GroupingTypeId = 4
+
+SELECT TOP 1 @department = EntityNo FROM [mdd].[GroupingNode] 
+WHERE GroupingTypeId = 1 
+
+IF NOT EXISTS (SELECT 1 FROM mdd.GroupingItem WHERE ItemNo = @itemNo)
+BEGIN
+	INSERT INTO mdd.GroupingItem
+	(GroupingNodeNo, ItemNo, GroupingTypeId)
+	VALUES
+	(@groupingItem, @itemNo, 4 ),
+	(@department, @itemNo, 1)
+END
+ELSE
+BEGIN
+	UPDATE mdd.GroupingItem
+	SET GroupingNodeNo = @groupingItem
+	WHERE ItemNo = @itemNo AND GroupingTypeId = 4
+
+	UPDATE mdd.GroupingItem
+	SET GroupingNodeNo = @department
+	WHERE ItemNo = @itemNo AND GroupingTypeId = 1	
+END
+/*ItemAttributesOtherAttributes*/ 
+declare @ZeroTaxId int
+select @ZeroTaxId = max(TaxNo) from  mdd.TaxRate where Rate = 0
+if @ZeroTaxId is null
+begin
+	set @ZeroTaxId = 202
+end
+--PRINT 'ItemAttributesOtherAttributes'
+IF NOT EXISTS (SELECT 1 FROM mdd.[ItemAttributesOtherAttributes] WHERE EntityNo = @itemNo)
+BEGIN
+	INSERT INTO [mdd].[ItemAttributesOtherAttributes]
+			(EntityNo, ManagementNodeNo, IsEntityGroup, FinancialGroupNo, OutFinancialGroupNo, EFTRestrictionNo, OutEFTRestrictionNo, ShelfEdgeLabelTypeId, Tax1No, Tax2No, IsOutdoorSalesAllowed)
+			VALUES (@itemNo, 1, 0, @defaultFinancial, @defaultFinancial, @defaultEFT, @defaultEFT, 0, @ZeroTaxId, @ZeroTaxId, 0);
+END
+ELSE
+BEGIN	
+	UPDATE [mdd].[ItemAttributesOtherAttributes]
+    SET [ManagementNodeNo] = 1
+      ,[IsEntityGroup] = 0
+      ,[FinancialGroupNo] = @defaultFinancial
+      ,[OutFinancialGroupNo] = @defaultFinancial
+      ,[EFTRestrictionNo] = @defaultEFT
+      ,[OutEFTRestrictionNo] = @defaultEFT
+      ,[ShelfEdgeLabelTypeId] = 0
+      ,[Tax1No] = @ZeroTaxId
+      ,[Tax2No] = @ZeroTaxId
+      ,[IsOutdoorSalesAllowed] = 0
+	WHERE EntityNo = @itemNo
+END
+
+
+/*ItemAttributesItemState table*/
+--PRINT 'ItemAttributesItemState'
+IF NOT EXISTS (SELECT 1 FROM mdd.[ItemAttributesItemState] WHERE EntityNo = @itemNo)
+BEGIN
+	INSERT INTO [mdd].[ItemAttributesItemState]
+			   ( EntityNo, ManagementNodeNo, IsEntityGroup, EntityStateId, IsLocked)
+		 VALUES (@itemNo, 1, 0, 1, 0);
+END
+ELSE 
+BEGIN 
+	UPDATE [mdd].[ItemAttributesItemState]
+	SET ManagementNodeNo = 1 
+	  , IsEntityGroup = 0
+	  , EntityStateId = 1
+	  , IsLocked = 0
+	WHERE EntityNo = @itemNo
+END
