@@ -1,0 +1,136 @@
+-- Currency setup
+
+-- Set allowed currencies
+UPDATE config.ConfigurationValue
+SET Value = '["978","578"]' -- 978 is EUR, 578 is NOK
+WHERE SettingId = 252 or SettingId = 254
+
+-- Set master currency
+UPDATE config.ConfigurationValue
+SET Value = 578
+WHERE SettingId = 251 or SettingId = 62
+
+-- Smallest denomination in Norway is 1.00 kr
+-- https://spike.dieboldnixdorf.com/display/SWRR/Localization+NO+BR
+update mdd.Currency set MinimalDenomination = 1.00  where EntityNo = 578
+
+DECLARE @orgNodeNmbr int;
+DECLARE @modifiedBy int;
+
+DECLARE @mopState int
+
+SET @orgNodeNmbr = 1 -- change if needed
+SET @modifiedBy = 6 -- change if needed
+
+DECLARE @json nvarchar(max);
+DECLARE @translationJson nvarchar(max);
+
+--Update Currency and description for Cash 
+update mdd.MethodOfPayment set CurrencyNo = 578, Description = 'Cash in NOK' where Name = 'Cash' and CurrencyNo = '978'
+
+declare @localeIdNo int
+declare @EntityNo int
+select @EntityNo = min(EntityNo) from mdd.MethodOfPayment where MOPTypeId = 0
+select @localeIdNo = id from lng.Locale where LocaleId = 'no-No' 
+if not exists(select * from mdd.EntityTranslation where EntityTranslationAttributeId = 53 and EntityNo in (select EntityNo from mdd.MethodOfPayment where MOPTypeId = 0) 
+and LocaleId = @localeIdNo)
+begin	
+	insert into mdd.EntityTranslation (EntityTranslationAttributeId,TranslationText,LocaleId, EntityNo ) values (53,'KONTANT',@localeIdNo, @entityNo)
+end
+else
+begin
+	--Set short text translation for Cash to "KONTANT"
+	update mdd.EntityTranslation set TranslationText = 'KONTANT' where EntityTranslationAttributeId = 53 and EntityNo in (select EntityNo from mdd.MethodOfPayment where MOPTypeId = 0) 
+	and LocaleId = @localeIdNo
+end
+
+-- Allow safe drop for cash
+UPDATE mdd.MethodOfPayment SET IsSafeDropEnabled = 1 WHERE Name = 'Cash' and Number = 1 and MOPTypeId = 0 and CurrencyNo = 578
+
+--Allow overpayment and refund for cash
+update mdd.MethodOfPayment set OverpaymentRuleId = 1, RefundRuleId = 1 where MOPTypeId = 0
+
+if not exists (select * from mdd.MOPCombination where MethodOfPaymentNo = @EntityNo and MOPCombinationTypeId = 1)
+begin
+	insert into mdd.MOPCombination (MethodOfPaymentNo, MOPCombinationTypeId, CombinedWithMopNo)
+	values (@EntityNo,1,@EntityNo)
+end
+if not exists (select * from mdd.MOPCombination where MethodOfPaymentNo = @EntityNo and MOPCombinationTypeId = 3)
+begin
+	insert into mdd.MOPCombination (MethodOfPaymentNo, MOPCombinationTypeId, CombinedWithMopNo)
+	values (@EntityNo,3,@EntityNo)
+end
+select @EntityNo = max(EntityNo) from mdd.MethodOfPayment where MOPTypeId = 0
+if not exists (select * from mdd.MOPCombination where MethodOfPaymentNo = @EntityNo and MOPCombinationTypeId = 1)
+begin
+	insert into mdd.MOPCombination (MethodOfPaymentNo, MOPCombinationTypeId, CombinedWithMopNo)
+	values (@EntityNo,1,@EntityNo)
+end
+if not exists (select * from mdd.MOPCombination where MethodOfPaymentNo = @EntityNo and MOPCombinationTypeId = 3)
+begin
+	insert into mdd.MOPCombination (MethodOfPaymentNo, MOPCombinationTypeId, CombinedWithMopNo)
+	values (@EntityNo,3,@EntityNo)
+end
+--Denominations for Cash
+declare  @id int
+select @id =  IsNull(max( EntityNo),0) from mdd.MOPDenomination 
+if @id < 100000
+begin
+	set @id = 100000
+end
+/*4 different coins (1 NOK, 5 NOK, 10 NOK and 20 NOK) and 5 different bank notes (50 NOK, 100 NOK, 200 NOK, 500 NOK and 1,000 NOK) that are all used.*/
+
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 1 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,1,1,1,@EntityNo,1,0)
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 5 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,2,5,5,@EntityNo,5, 0)
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 10 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,3,10,10,@EntityNo,10,0)
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 20 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,4,20,20,@EntityNo,20,0)
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 50 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,5,50,50,@EntityNo,50,0 )
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 100 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,6,100,100,@EntityNo,100,0)
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 200 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,7,200,200,@EntityNo,200,0)
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 500 )
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit, MOPTypeId)
+	values (@id,8,500,500,@EntityNo,500, 0)
+end 
+if not exists (select * from mdd.MOPDenomination where MethodOfPaymentNo  = @EntityNo and unit = 1000)
+begin
+	set @id = @id +1
+	insert into mdd.MOPDenomination (EntityNo, Number, Name, Description,MethodOfPaymentNo, Unit,MOPTypeId)
+	values (@id,9,1000,1000,@EntityNo,1000, 0)
+end 
