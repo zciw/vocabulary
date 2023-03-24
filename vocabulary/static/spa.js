@@ -105,8 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('six')
                 hide()
 <<<<<<< HEAD
+<<<<<<< HEAD
             } else if (this.dataset.page === 'user') {
                 showPage(this.dataset.page);
+=======
+>>>>>>> parent of ffb7632... new code from macbook
 =======
 >>>>>>> parent of ffb7632... new code from macbook
             } else {
@@ -116,7 +119,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 <<<<<<< HEAD
+<<<<<<< HEAD
     hideAndShowLoginAndUser()
+=======
+    let submitLog = document.querySelector('.log');
+    submitLog.onclick = hideAndShowLoginAndUser()
+>>>>>>> parent of ffb7632... new code from macbook
 =======
     let submitLog = document.querySelector('.log');
     submitLog.onclick = hideAndShowLoginAndUser()

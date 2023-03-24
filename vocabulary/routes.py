@@ -49,6 +49,7 @@ def play():
         global user
         user = session['user']
 <<<<<<< HEAD
+<<<<<<< HEAD
         login_counter =  User.query.filter_by(name=user).first().logged_counter
         print('login counter: ',login_counter)
         return jsonify({'success' :'False', 'user':user, 'login_counter':login_counter})
@@ -59,6 +60,8 @@ def play():
 
 
 =======
+=======
+>>>>>>> parent of ffb7632... new code from macbook
         return render_template('spa.html', success='False', user=user)
     return render_template('spa.html', success='False', user=user)
 >>>>>>> parent of ffb7632... new code from macbook
